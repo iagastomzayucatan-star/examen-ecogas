@@ -1835,26 +1835,14 @@
       const letters = ['A', 'B', 'C', 'D'];
       const selectedOpt = userAnswers[q.id];
 
-      const hasImg = (q.image && q.image !== 'NONE' && q.image !== '');
-
       const container = document.getElementById('questionContainer');
       container.innerHTML = `
         <div style="font-size: 11px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
           PREGUNTA #${currentQuestionIndex + 1} &bull; CONVERSIÓN ECOGAS LP
         </div>
-        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 12px; line-height: 1.35;">
+        <h3 style="font-size: 17px; font-weight: 800; color: #ffffff; margin-bottom: 16px; line-height: 1.4;">
           ${q.question}
         </h3>
-
-        ${hasImg ? `
-          <div style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; max-height: 170px; display: flex; justify-content: center; background: #040e07; border: 1px solid rgba(74,222,128,0.2);">
-            <img src="${q.image}" alt="Referencia" style="max-height: 170px; max-width: 100%; object-fit: contain;" />
-          </div>
-        ` : `
-          <div style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; max-height: 120px; display: flex; justify-content: center; align-items: center; background: #040e07; border: 1px solid rgba(74,222,128,0.15);" class="animate-mascot">
-            ${getThinkingMascotSVG(currentQuestionIndex)}
-          </div>
-        `}
 
         <div style="display: flex; flex-direction: column;">
           ${q.options.map((opt, idx) => {
