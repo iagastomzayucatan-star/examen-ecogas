@@ -31,8 +31,8 @@
       --bg-deep: #05140b;
       --bg-dark: #081e11;
       --bg-surface: #0d2818;
-      --bg-card: rgba(14, 43, 26, 0.82);
-      --border-card: rgba(74, 222, 128, 0.18);
+      --bg-card: rgba(14, 43, 26, 0.85);
+      --border-card: rgba(74, 222, 128, 0.2);
       --brand-green: #2ea428;
       --brand-green-light: #4ade80;
       --brand-green-glow: rgba(46, 164, 40, 0.4);
@@ -93,14 +93,14 @@
     }
 
     .glass-card {
-      background: rgba(18, 54, 33, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(18, 54, 33, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 14px;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .glass-card:hover {
       border-color: var(--brand-green-light);
-      background: rgba(22, 66, 40, 0.85);
+      background: rgba(22, 66, 40, 0.88);
       transform: translateY(-2px);
     }
 
@@ -412,7 +412,8 @@
       getDoc, 
       onSnapshot, 
       query, 
-      orderBy 
+      orderBy,
+      where
     } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -437,6 +438,7 @@
       window.firestoreOnSnapshot = onSnapshot;
       window.firestoreQuery = query;
       window.firestoreOrderBy = orderBy;
+      window.firestoreWhere = where;
       console.log("🔥 Firebase Firestore listo para Examen & Kahoot en vivo.");
       window.dispatchEvent(new CustomEvent('firebase-ready'));
     } catch(err) {
@@ -778,7 +780,7 @@
             <span id="kahootJoinErrorText">Error al unirse a la sala.</span>
           </div>
 
-          <button type="submit" class="btn-kahoot" style="padding: 14px; font-size: 15px;">
+          <button type="submit" id="btnSubmitTeamJoin" class="btn-kahoot" style="padding: 14px; font-size: 15px;">
             ¡REGISTRAR EQUIPO Y ENTRAR! 🚀
           </button>
         </form>
@@ -813,11 +815,16 @@
         </div>
 
         <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: #cbd5e1;">Equipos conectados a la sala:</div>
+          <div style="font-size: 12px; color: #cbd5e1;">Equipos conectados en total:</div>
           <div id="kahootPlayerLobbyCount" style="font-size: 18px; font-weight: 900; color: #4ade80; margin-top: 2px;">1 equipo</div>
         </div>
 
-        <p style="font-size: 12px; color: #94a3b8; margin-top: 16px;">Mira la pantalla del presentador / proyector. La batalla comenzará en cuanto todos confirmen...</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+          <button onclick="leaveTeamLobby()" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+            ✕ Cambiar Equipo
+          </button>
+          <p style="font-size: 11px; color: #94a3b8; margin: 0;">Mira el proyector...</p>
+        </div>
       </div>
     </section>
 
@@ -869,6 +876,9 @@
           <div style="display: flex; gap: 8px;">
             <button onclick="toggleAudio()" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;">
               🎵 <span id="hostAudioBtnText">Música: ON</span>
+            </button>
+            <button onclick="clearAllTeamsHost()" class="btn-secondary" style="padding: 4px 10px; font-size: 12px; color: #fda4af;" title="Limpiar todos los equipos para empezar de cero">
+              🗑️ Reiniciar Sala
             </button>
             <button onclick="switchMode('admin')" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;">
               Panel Admin
@@ -1426,14 +1436,29 @@
       score: 0,
       streak: 0
     };
-    let kahootUnsubscribe = null;
+    let allConnectedTeams = {}; // Map of teamId -> team object
+    let kahootRoomUnsubscribe = null;
+    let kahootTeamsUnsubscribe = null;
     let kahootHostTimerInterval = null;
     let kahootQStartTime = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
       loadCachedSession();
       loadCachedSubmissions();
+      checkCachedKahootTeam();
     });
+
+    function checkCachedKahootTeam() {
+      const cached = localStorage.getItem('ecogas_kahoot_team');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.id && parsed.name) {
+            kahootTeamData = parsed;
+          }
+        } catch(e) {}
+      }
+    }
 
     function loadCachedSession() {
       const sess = localStorage.getItem('ecogas_current_session');
@@ -1533,7 +1558,14 @@
       if (mode === 'exam') {
         showView('viewLogin');
       } else if (mode === 'kahoot-join') {
-        showView('viewKahootJoin');
+        if (kahootTeamData && kahootTeamData.id && kahootTeamData.name) {
+          // Re-attach to existing room lobby
+          renderPlayerLobbyUI();
+          attachTeamListeners(currentKahootPin, kahootTeamData.id);
+          showView('viewKahootPlayerLobby');
+        } else {
+          showView('viewKahootJoin');
+        }
       } else if (mode === 'kahoot-host') {
         initKahootHost();
       } else if (mode === 'admin') {
@@ -2347,23 +2379,14 @@
 
     // ====================================================
     // 🎮 REAL-TIME MULTIPLAYER TEAM KAHOOT ENGINE
+    // (Subcollections Architecture: Zero Overwrites)
     // ====================================================
 
-    let kahootRoomData = {
-      pin: '2026',
-      status: 'LOBBY', // LOBBY, COUNTDOWN, QUESTION, REVEAL, LEADERBOARD, PODIUM
-      currentQ: 0,
-      questionStartTime: 0,
-      players: {}, // Keyed by teamId: { id, name, members, isReady, score, streak, lastAnswer, lastAnswerTime }
-      updatedAt: Date.now()
-    };
-
-    // DYNAMIC TEAM MEMBERS INPUT FORM
     function addTeamMemberInput() {
       const container = document.getElementById('teamMembersInputsContainer');
       const count = container.querySelectorAll('.member-row').length + 1;
       const row = document.createElement('div');
-      row.className = 'member-row';
+      row.className = 'member-row animate-enter';
       row.innerHTML = `
         <input type="text" placeholder="Nombre del Integrante ${count} (Opcional)" class="input-field team-member-input" />
         <button type="button" onclick="removeMemberRow(this)" class="member-delete-btn">✕</button>
@@ -2376,7 +2399,13 @@
       if (row) row.remove();
     }
 
-    // TEAM JOIN LOGIC (MOBILE / PLAYER)
+    function leaveTeamLobby() {
+      localStorage.removeItem('ecogas_kahoot_team');
+      kahootTeamData = { id: '', name: '', members: [], isReady: false, score: 0, streak: 0 };
+      showView('viewKahootJoin');
+    }
+
+    // TEAM JOIN (MOBILE)
     async function handleKahootTeamJoin(e) {
       e.preventDefault();
       const teamName = document.getElementById('inputKahootTeamName').value.trim();
@@ -2399,60 +2428,78 @@
       }
 
       currentKahootPin = pin;
-      const teamId = 'team_' + Math.random().toString(36).substring(2, 9);
+      const teamId = 'team_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
       kahootTeamData = {
         id: teamId,
+        pin: pin,
         name: teamName,
         members: members,
         isReady: false,
         score: 0,
-        streak: 0
+        streak: 0,
+        lastAnswer: null,
+        lastAnswerTime: null,
+        lastAnswerQIndex: -1,
+        joinedAt: Date.now()
       };
 
-      // Play start chime & lobby music
+      localStorage.setItem('ecogas_kahoot_team', JSON.stringify(kahootTeamData));
+
+      // Start audio
       soundEngine.playLobbyMusic();
 
-      // Sync team to Firestore
+      renderPlayerLobbyUI();
+      showView('viewKahootPlayerLobby');
+
+      // Sync team document to Firestore Subcollection
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
-          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
+          const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
           
-          // Ensure room exists
-          const snap = await window.firestoreGetDoc(docRef);
-          if (!snap.exists()) {
-            await window.firestoreSetDoc(docRef, {
+          // Ensure room exists without wiping other data
+          const roomSnap = await window.firestoreGetDoc(roomRef);
+          if (!roomSnap.exists()) {
+            await window.firestoreSetDoc(roomRef, {
               pin: pin,
               status: 'LOBBY',
               currentQ: 0,
-              players: {},
               updatedAt: Date.now()
             });
           }
 
-          const updateObj = {};
-          updateObj[`players.${teamId}`] = kahootTeamData;
-          await window.firestoreSetDoc(docRef, updateObj, { merge: true });
+          // Register in Subcollection (INDEPENDENT DOCUMENT)
+          const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin, 'teams', teamId);
+          await window.firestoreSetDoc(teamDocRef, kahootTeamData);
 
-          renderPlayerLobbyUI();
-          showView('viewKahootPlayerLobby');
-
-          // Listen to live room updates
-          if (kahootUnsubscribe) kahootUnsubscribe();
-          kahootUnsubscribe = window.firestoreOnSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-              handleKahootPlayerRoomUpdate(docSnap.data());
-            }
-          });
+          attachTeamListeners(pin, teamId);
 
         } catch (err) {
-          console.warn('Room join error:', err);
-          renderPlayerLobbyUI();
-          showView('viewKahootPlayerLobby');
+          console.warn('Firestore team join fallback:', err);
         }
-      } else {
-        renderPlayerLobbyUI();
-        showView('viewKahootPlayerLobby');
       }
+    }
+
+    function attachTeamListeners(pin, teamId) {
+      if (!window.db) return;
+
+      // 1. Listen to room state updates
+      const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
+      if (kahootRoomUnsubscribe) kahootRoomUnsubscribe();
+      kahootRoomUnsubscribe = window.firestoreOnSnapshot(roomRef, (docSnap) => {
+        if (docSnap.exists()) {
+          handleKahootPlayerRoomUpdate(docSnap.data());
+        }
+      });
+
+      // 2. Listen to all teams in room to update total connected counter
+      const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', pin, 'teams');
+      if (kahootTeamsUnsubscribe) kahootTeamsUnsubscribe();
+      kahootTeamsUnsubscribe = window.firestoreOnSnapshot(teamsColRef, (colSnap) => {
+        const teamsList = [];
+        colSnap.forEach(d => teamsList.push({ id: d.id, ...d.data() }));
+        const countEl = document.getElementById('kahootPlayerLobbyCount');
+        if (countEl) countEl.innerText = `${teamsList.length} equipo${teamsList.length !== 1 ? 's' : ''}`;
+      });
     }
 
     function renderPlayerLobbyUI() {
@@ -2471,19 +2518,23 @@
       soundEngine.playTone(kahootTeamData.isReady ? 880 : 440, 'sine', 0.15, 0.15);
       updatePlayerReadyButtonUI();
 
-      if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin) {
+      localStorage.setItem('ecogas_kahoot_team', JSON.stringify(kahootTeamData));
+
+      if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin && kahootTeamData.id) {
         try {
-          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin);
-          const updateObj = {};
-          updateObj[`players.${kahootTeamData.id}.isReady`] = kahootTeamData.isReady;
-          await window.firestoreSetDoc(docRef, updateObj, { merge: true });
-        } catch (e) {}
+          const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams', kahootTeamData.id);
+          await window.firestoreSetDoc(teamDocRef, { isReady: kahootTeamData.isReady }, { merge: true });
+        } catch (e) {
+          console.warn('Ready sync fallback:', e);
+        }
       }
     }
 
     function updatePlayerReadyButtonUI() {
       const btn = document.getElementById('btnPlayerToggleReady');
       const txt = document.getElementById('btnPlayerReadyText');
+      if (!btn || !txt) return;
+
       if (kahootTeamData.isReady) {
         btn.classList.remove('btn-gold');
         btn.classList.add('btn-primary');
@@ -2495,13 +2546,11 @@
       }
     }
 
-    function handleKahootPlayerRoomUpdate(room) {
-      kahootRoomData = room;
+    let lastHandledRoomStatus = '';
+    let lastHandledQ = -1;
 
-      // Update connected teams count
-      const teams = Object.values(room.players || {});
-      const countEl = document.getElementById('kahootPlayerLobbyCount');
-      if (countEl) countEl.innerText = `${teams.length} equipo${teams.length !== 1 ? 's' : ''}`;
+    function handleKahootPlayerRoomUpdate(room) {
+      if (!room) return;
 
       if (room.status === 'LOBBY') {
         showView('viewKahootPlayerLobby');
@@ -2510,33 +2559,44 @@
         soundEngine.playTone(660, 'sine', 0.1, 0.1);
       } else if (room.status === 'QUESTION') {
         const qIdx = room.currentQ || 0;
-        const q = EXAM_QUESTIONS[qIdx];
-        kahootQStartTime = Date.now();
-        playerHasAnsweredCurrentQ = false;
+        
+        // If it's a new question
+        if (lastHandledQ !== qIdx || lastHandledRoomStatus !== 'QUESTION') {
+          lastHandledQ = qIdx;
+          lastHandledRoomStatus = 'QUESTION';
+          kahootQStartTime = Date.now();
+          playerHasAnsweredCurrentQ = false;
 
-        soundEngine.playQuestionMusic(20);
+          const q = EXAM_QUESTIONS[qIdx];
+          soundEngine.playQuestionMusic(20);
 
-        document.getElementById('kahootPlayerQBadge').innerText = `Pregunta ${qIdx + 1} de ${EXAM_QUESTIONS.length}`;
-        document.getElementById('kahootPlayerScoreBadge').innerText = `🔥 ${kahootTeamData.score} pts`;
-        document.getElementById('kOptLabel0').innerText = q.options[0];
-        document.getElementById('kOptLabel1').innerText = q.options[1];
-        document.getElementById('kOptLabel2').innerText = q.options[2];
-        document.getElementById('kOptLabel3').innerText = q.options[3];
+          document.getElementById('kahootPlayerQBadge').innerText = `Pregunta ${qIdx + 1} de ${EXAM_QUESTIONS.length}`;
+          document.getElementById('kahootPlayerScoreBadge').innerText = `🔥 ${kahootTeamData.score} pts`;
+          document.getElementById('kOptLabel0').innerText = q.options[0];
+          document.getElementById('kOptLabel1').innerText = q.options[1];
+          document.getElementById('kOptLabel2').innerText = q.options[2];
+          document.getElementById('kOptLabel3').innerText = q.options[3];
 
-        document.getElementById('kahootPlayerButtonsContainer').classList.remove('hidden');
-        document.getElementById('kahootPlayerFeedback').classList.add('hidden');
+          document.getElementById('kahootPlayerButtonsContainer').classList.remove('hidden');
+          document.getElementById('kahootPlayerFeedback').classList.add('hidden');
 
-        showView('viewKahootPlayerGame');
+          showView('viewKahootPlayerGame');
+        }
       } else if (room.status === 'REVEAL') {
+        lastHandledRoomStatus = 'REVEAL';
         document.getElementById('kahootPlayerButtonsContainer').classList.add('hidden');
         document.getElementById('kahootPlayerFeedback').classList.remove('hidden');
       } else if (room.status === 'LEADERBOARD') {
+        lastHandledRoomStatus = 'LEADERBOARD';
         document.getElementById('kahootPlayerButtonsContainer').classList.add('hidden');
         document.getElementById('kahootPlayerFeedback').classList.remove('hidden');
       } else if (room.status === 'PODIUM') {
+        lastHandledRoomStatus = 'PODIUM';
         soundEngine.playPodium();
         document.getElementById('kahootPlayerFeedbackTitle').innerText = '¡BATALLA TERMINADA!';
         document.getElementById('kahootPlayerFeedbackPoints').innerText = `Puntuación final del equipo: ${kahootTeamData.score} pts`;
+        document.getElementById('kahootPlayerButtonsContainer').classList.add('hidden');
+        document.getElementById('kahootPlayerFeedback').classList.remove('hidden');
       }
     }
 
@@ -2546,7 +2606,7 @@
       if (playerHasAnsweredCurrentQ) return;
       playerHasAnsweredCurrentQ = true;
 
-      const qIdx = kahootRoomData.currentQ || 0;
+      const qIdx = lastHandledQ >= 0 ? lastHandledQ : 0;
       const q = EXAM_QUESTIONS[qIdx];
       const isCorrect = (optionIdx === q.correctIndex);
 
@@ -2574,21 +2634,26 @@
         document.getElementById('kahootPlayerFeedbackPoints').innerText = '+0 pts';
       }
 
+      localStorage.setItem('ecogas_kahoot_team', JSON.stringify(kahootTeamData));
+
       document.getElementById('kahootPlayerScoreBadge').innerText = `🔥 ${kahootTeamData.score} pts`;
       document.getElementById('kahootPlayerButtonsContainer').classList.add('hidden');
       document.getElementById('kahootPlayerFeedback').classList.remove('hidden');
 
-      // Sync team score to Firestore
-      if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin) {
+      // Sync answer to Firestore Subcollection
+      if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin && kahootTeamData.id) {
         try {
-          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin);
-          const updateObj = {};
-          updateObj[`players.${kahootTeamData.id}.score`] = kahootTeamData.score;
-          updateObj[`players.${kahootTeamData.id}.streak`] = kahootTeamData.streak;
-          updateObj[`players.${kahootTeamData.id}.lastAnswer`] = optionIdx;
-          updateObj[`players.${kahootTeamData.id}.lastAnswerTime`] = Date.now();
-          await window.firestoreSetDoc(docRef, updateObj, { merge: true });
-        } catch(e) {}
+          const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams', kahootTeamData.id);
+          await window.firestoreSetDoc(teamDocRef, {
+            score: kahootTeamData.score,
+            streak: kahootTeamData.streak,
+            lastAnswer: optionIdx,
+            lastAnswerQIndex: qIdx,
+            lastAnswerTime: Date.now()
+          }, { merge: true });
+        } catch(e) {
+          console.warn('Answer sync fallback:', e);
+        }
       }
     }
 
@@ -2596,16 +2661,15 @@
     // 📺 HOST / PROYECTOR LOGIC (KAHOOT)
     // ==========================================
 
+    let currentHostRoomData = {
+      pin: '2026',
+      status: 'LOBBY',
+      currentQ: 0
+    };
+
     async function initKahootHost() {
       const pin = '2026';
       currentKahootPin = pin;
-      kahootRoomData = {
-        pin: pin,
-        status: 'LOBBY',
-        currentQ: 0,
-        players: {},
-        updatedAt: Date.now()
-      };
 
       document.getElementById('kahootHostPinDisplay').innerText = pin;
       document.getElementById('kahootHostPlayersCount').innerText = '0';
@@ -2623,24 +2687,57 @@
       // Start lobby music
       soundEngine.playLobbyMusic();
 
-      // Sync Host Room in Firestore
+      // Initialize room in Firestore preserving teams
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
-        await window.firestoreSetDoc(window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin), kahootRoomData);
-        
-        if (kahootUnsubscribe) kahootUnsubscribe();
-        kahootUnsubscribe = window.firestoreOnSnapshot(window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin), (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            kahootRoomData = data;
-            renderHostLobbyTeams(data.players || {});
-            updateHostAnsweredCount(data.players || {});
+        try {
+          const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
+          const snap = await window.firestoreGetDoc(roomRef);
+          
+          if (!snap.exists()) {
+            await window.firestoreSetDoc(roomRef, {
+              pin: pin,
+              status: 'LOBBY',
+              currentQ: 0,
+              updatedAt: Date.now()
+            });
+          } else {
+            // Keep existing room but ensure it's on LOBBY if not started
+            const currentData = snap.data();
+            currentHostRoomData = currentData;
+            if (currentData.status === 'PODIUM') {
+              await window.firestoreSetDoc(roomRef, { status: 'LOBBY', currentQ: 0, updatedAt: Date.now() }, { merge: true });
+            }
           }
-        });
+
+          // 1. Listen to Room status
+          if (kahootRoomUnsubscribe) kahootRoomUnsubscribe();
+          kahootRoomUnsubscribe = window.firestoreOnSnapshot(roomRef, (docSnap) => {
+            if (docSnap.exists()) {
+              currentHostRoomData = docSnap.data();
+            }
+          });
+
+          // 2. Listen to TEAMS Subcollection (Real-Time Real Live Sync)
+          const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', pin, 'teams');
+          if (kahootTeamsUnsubscribe) kahootTeamsUnsubscribe();
+          kahootTeamsUnsubscribe = window.firestoreOnSnapshot(teamsColRef, (colSnap) => {
+            const teams = {};
+            colSnap.forEach(d => {
+              teams[d.id] = { id: d.id, ...d.data() };
+            });
+            allConnectedTeams = teams;
+            renderHostLobbyTeams(teams);
+            updateHostAnsweredCount(teams);
+          });
+
+        } catch (err) {
+          console.warn('Host init fallback:', err);
+        }
       }
     }
 
-    function renderHostLobbyTeams(players) {
-      const list = Object.values(players);
+    function renderHostLobbyTeams(teams) {
+      const list = Object.values(teams);
       const readyList = list.filter(p => p.isReady);
 
       document.getElementById('kahootHostPlayersCount').innerText = list.length;
@@ -2653,15 +2750,15 @@
         container.innerHTML = list.map(p => {
           const membersText = p.members && p.members.length > 0 ? p.members.join(', ') : '1 participante';
           return `
-            <div class="glass-card animate-enter" style="padding: 12px; border-color: ${p.isReady ? '#4ade80' : 'rgba(255,255,255,0.1)'}; background: ${p.isReady ? 'rgba(46,164,40,0.2)' : 'rgba(18,54,33,0.6)'};">
+            <div class="glass-card animate-enter" style="padding: 12px; border-color: ${p.isReady ? '#4ade80' : 'rgba(255,255,255,0.1)'}; background: ${p.isReady ? 'rgba(46,164,40,0.22)' : 'rgba(18,54,33,0.65)'};">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px;">
                 <div style="font-weight: 800; font-size: 14px; color: #ffffff;">🚗 ${p.name}</div>
                 <span style="font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: ${p.isReady ? '#2ea428' : '#334155'}; color: #ffffff;">
                   ${p.isReady ? '✓ LISTO' : '⏳ Esperando'}
                 </span>
               </div>
-              <div style="font-size: 11px; color: #a5b4fc; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                👥 ${membersText}
+              <div style="font-size: 11px; color: #a5b4fc; margin-top: 5px; line-height: 1.3;">
+                👥 <b>Integrantes:</b> ${membersText}
               </div>
             </div>
           `;
@@ -2669,12 +2766,33 @@
       }
     }
 
+    async function clearAllTeamsHost() {
+      if (!confirm('¿Deseas reiniciar la sala y desconectar a los equipos actuales para empezar de cero?')) return;
+
+      if (window.db && window.firestoreCol && window.firestoreGetDocs && window.firestoreDeleteDoc) {
+        try {
+          const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams');
+          const snap = await window.firestoreGetDocs(teamsColRef);
+          const deletes = snap.docs.map(d => window.firestoreDeleteDoc(d.ref));
+          await Promise.all(deletes);
+
+          const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin);
+          await window.firestoreSetDoc(roomRef, { status: 'LOBBY', currentQ: 0, updatedAt: Date.now() });
+
+          allConnectedTeams = {};
+          renderHostLobbyTeams({});
+        } catch(e) {
+          console.warn('Clear teams error:', e);
+        }
+      }
+    }
+
     function promptStartKahootGameHost() {
-      const list = Object.values(kahootRoomData.players || {});
+      const list = Object.values(allConnectedTeams);
       const readyList = list.filter(p => p.isReady);
 
       document.getElementById('confirmModalStatusText').innerHTML = `
-        Hay <b>${list.length}</b> equipo(s) conectado(s) y <b>${readyList.length}</b> han confirmado estar listos.
+        Hay <b>${list.length}</b> equipo(s) registrado(s) en la sala y <b>${readyList.length}</b> han confirmado estar listos.
       `;
 
       document.getElementById('modalConfirmStartBattle').classList.remove('hidden');
@@ -2690,8 +2808,8 @@
       document.getElementById('kahootHostLobby').classList.add('hidden');
       document.getElementById('kahootHostCountdownSplash').classList.remove('hidden');
 
-      kahootRoomData.status = 'COUNTDOWN';
-      await updateRoomInFirestore();
+      currentHostRoomData.status = 'COUNTDOWN';
+      await updateHostRoomInFirestore({ status: 'COUNTDOWN', currentQ: 0 });
 
       soundEngine.stopMusic();
 
@@ -2712,10 +2830,10 @@
 
           setTimeout(async () => {
             document.getElementById('kahootHostCountdownSplash').classList.add('hidden');
-            kahootRoomData.status = 'QUESTION';
-            kahootRoomData.currentQ = 0;
-            kahootRoomData.questionStartTime = Date.now();
-            await updateRoomInFirestore();
+            currentHostRoomData.status = 'QUESTION';
+            currentHostRoomData.currentQ = 0;
+            currentHostRoomData.questionStartTime = Date.now();
+            await updateHostRoomInFirestore({ status: 'QUESTION', currentQ: 0, questionStartTime: Date.now() });
             showHostQuestion(0);
           }, 800);
         }
@@ -2723,7 +2841,9 @@
     }
 
     function showHostQuestion(idx) {
+      currentHostRoomData.currentQ = idx;
       const q = EXAM_QUESTIONS[idx];
+
       document.getElementById('kahootHostLobby').classList.add('hidden');
       document.getElementById('kahootHostLeaderboard').classList.add('hidden');
       document.getElementById('kahootHostPodium').classList.add('hidden');
@@ -2782,10 +2902,11 @@
       }, 1000);
     }
 
-    function updateHostAnsweredCount(players) {
-      if (kahootRoomData.status !== 'QUESTION') return;
-      const list = Object.values(players);
-      const answered = list.filter(p => p.lastAnswer !== undefined);
+    function updateHostAnsweredCount(teams) {
+      if (currentHostRoomData.status !== 'QUESTION') return;
+      const list = Object.values(teams);
+      const currentQ = currentHostRoomData.currentQ || 0;
+      const answered = list.filter(p => p.lastAnswerQIndex === currentQ);
       const el = document.getElementById('kahootHostAnsweredCount');
       if (el) el.innerHTML = `Respondieron: <b>${answered.length} / ${list.length}</b>`;
     }
@@ -2793,7 +2914,7 @@
     async function revealKahootAnswerHost() {
       if (kahootHostTimerInterval) clearInterval(kahootHostTimerInterval);
       
-      const q = EXAM_QUESTIONS[kahootRoomData.currentQ];
+      const q = EXAM_QUESTIONS[currentHostRoomData.currentQ];
       soundEngine.playCorrect();
 
       // Highlight correct option card
@@ -2810,8 +2931,8 @@
         }
       }
 
-      kahootRoomData.status = 'REVEAL';
-      await updateRoomInFirestore();
+      currentHostRoomData.status = 'REVEAL';
+      await updateHostRoomInFirestore({ status: 'REVEAL' });
 
       setTimeout(() => {
         showHostLeaderboard();
@@ -2819,13 +2940,13 @@
     }
 
     async function showHostLeaderboard() {
-      kahootRoomData.status = 'LEADERBOARD';
-      await updateRoomInFirestore();
+      currentHostRoomData.status = 'LEADERBOARD';
+      await updateHostRoomInFirestore({ status: 'LEADERBOARD' });
 
       document.getElementById('kahootHostQuestionView').classList.add('hidden');
       document.getElementById('kahootHostLeaderboard').classList.remove('hidden');
 
-      const players = Object.values(kahootRoomData.players || {});
+      const players = Object.values(allConnectedTeams);
       players.sort((a, b) => (b.score || 0) - (a.score || 0));
 
       const container = document.getElementById('kahootHostLeaderboardList');
@@ -2837,7 +2958,7 @@
             <div style="display: flex; align-items: center; gap: 10px;">
               <span style="font-size: 16px; font-weight: 900; color: ${i === 0 ? '#facc15' : i === 1 ? '#cbd5e1' : i === 2 ? '#d97706' : '#94a3b8'};">#${i + 1}</span>
               <div>
-                <div style="font-size: 15px; font-weight: 800; color: #ffffff;">${p.name}</div>
+                <div style="font-size: 15px; font-weight: 800; color: #ffffff;">🚗 ${p.name}</div>
                 <div style="font-size: 10px; color: #a5b4fc;">${p.members && p.members.length > 0 ? p.members.join(', ') : ''}</div>
               </div>
             </div>
@@ -2848,12 +2969,12 @@
     }
 
     async function nextKahootQuestionHost() {
-      const nextIdx = kahootRoomData.currentQ + 1;
+      const nextIdx = (currentHostRoomData.currentQ || 0) + 1;
       if (nextIdx < EXAM_QUESTIONS.length) {
-        kahootRoomData.currentQ = nextIdx;
-        kahootRoomData.status = 'QUESTION';
-        kahootRoomData.questionStartTime = Date.now();
-        await updateRoomInFirestore();
+        currentHostRoomData.currentQ = nextIdx;
+        currentHostRoomData.status = 'QUESTION';
+        currentHostRoomData.questionStartTime = Date.now();
+        await updateHostRoomInFirestore({ status: 'QUESTION', currentQ: nextIdx, questionStartTime: Date.now() });
         showHostQuestion(nextIdx);
       } else {
         showHostPodium();
@@ -2861,15 +2982,15 @@
     }
 
     async function showHostPodium() {
-      kahootRoomData.status = 'PODIUM';
-      await updateRoomInFirestore();
+      currentHostRoomData.status = 'PODIUM';
+      await updateHostRoomInFirestore({ status: 'PODIUM' });
 
       soundEngine.playPodium();
 
       document.getElementById('kahootHostLeaderboard').classList.add('hidden');
       document.getElementById('kahootHostPodium').classList.remove('hidden');
 
-      const players = Object.values(kahootRoomData.players || {});
+      const players = Object.values(allConnectedTeams);
       players.sort((a, b) => (b.score || 0) - (a.score || 0));
 
       const p1 = players[0] || { name: '1.er Lugar', members: [], score: 0 };
@@ -2939,13 +3060,14 @@
       openDiplomaModal();
     }
 
-    async function updateRoomInFirestore() {
+    async function updateHostRoomInFirestore(data) {
       if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin) {
         try {
-          await window.firestoreSetDoc(window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin), {
-            ...kahootRoomData,
+          const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin);
+          await window.firestoreSetDoc(roomRef, {
+            ...data,
             updatedAt: Date.now()
-          });
+          }, { merge: true });
         } catch(e) {
           console.warn('Host update error:', e);
         }
