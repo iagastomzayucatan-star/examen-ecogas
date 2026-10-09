@@ -10,7 +10,7 @@
   
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://examen-ecogas.web.app/" />
+  <meta property="og:url" content="https://capacitacion-ecogas.web.app/" />
   <meta property="og:title" content="📝 Examen & Batalla de Capacitación | ECOGAS LP" />
   <meta property="og:description" content="Evaluación de Gas LP vehicular. Examen individual con diploma y Batalla Kahoot en vivo por equipos con reconocimiento oficial." />
   <meta property="og:image" content="https://iagastomzayucatan-star.github.io/examen-ecogas/preview-card.png" />
@@ -465,7 +465,7 @@
     }
   </style>
 
-  <!-- Firebase App & Firestore SDK -->
+  <!-- Firebase App & Firestore SDK (APP ECOGAS 64A25) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
     import { 
@@ -484,12 +484,12 @@
     } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDHoROKvtbSj6xflIEafgMq8X-LbbUOTBQ",
-      authDomain: "cobranza-tomza.firebaseapp.com",
-      projectId: "cobranza-tomza",
-      storageBucket: "cobranza-tomza.firebasestorage.app",
-      messagingSenderId: "525542037536",
-      appId: "1:525542037536:web:867d0c4958a4d65287c445"
+      apiKey: "AIzaSyBXiqyRpVcwzqx_PiNrnz3vjw7cwka37GY",
+      authDomain: "app-ecogas-64a25.firebaseapp.com",
+      projectId: "app-ecogas-64a25",
+      storageBucket: "app-ecogas-64a25.firebasestorage.app",
+      messagingSenderId: "539959971237",
+      appId: "1:539959971237:web:15532170694a2e14e32c4c"
     };
 
     try {
@@ -506,7 +506,7 @@
       window.firestoreQuery = query;
       window.firestoreOrderBy = orderBy;
       window.firestoreWhere = where;
-      console.log("🔥 Firebase Firestore listo para Examen & Kahoot en vivo.");
+      console.log("🔥 Firebase Firestore conectado a APP ECOGAS (app-ecogas-64a25).");
       window.dispatchEvent(new CustomEvent('firebase-ready'));
     } catch(err) {
       console.warn("Firestore offline fallback active:", err);
@@ -962,7 +962,7 @@
 
         <h1 style="font-size: 26px; font-weight: 900; color: #ffffff;">BATALLA DE CAPACITACIÓN ECOGAS LP</h1>
         <p style="font-size: 13px; color: #cbd5e1; margin-top: 2px;">
-          Abran en sus celulares: <b style="color: #4ade80;">https://examen-ecogas.web.app</b> y pulsen <b>"Batalla de Equipos"</b>
+          Abran en sus celulares: <b style="color: #4ade80;">https://capacitacion-ecogas.web.app</b> y pulsen <b>"Batalla de Equipos"</b>
         </p>
 
         <!-- Big PIN Box -->
@@ -1279,17 +1279,15 @@
     function getThinkingMascotSVG(poseIndex = 0) {
       const poses = [
         // Pose 1: Thinking / Hand on chin 🤔
-        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        `<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="42" fill="url(#gradMascot1)" stroke="#d4af37" stroke-width="3"/>
           <circle cx="36" cy="42" r="5" fill="#0f172a"/>
           <circle cx="64" cy="38" r="5" fill="#0f172a"/>
           <path d="M30 32 Q36 28 42 32" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
           <path d="M58 28 Q64 24 70 28" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
           <path d="M42 66 Q50 60 58 66" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
-          <!-- Hand on chin -->
           <ellipse cx="62" cy="68" rx="8" ry="6" fill="#fde047" stroke="#d4af37" stroke-width="2"/>
           <circle cx="58" cy="72" r="4" fill="#fde047"/>
-          <!-- Question marks -->
           <text x="75" y="30" font-size="18" font-weight="bold" fill="#facc15" opacity="0.9">?</text>
           <text x="14" y="38" font-size="14" font-weight="bold" fill="#4ade80" opacity="0.8">?</text>
           <defs>
@@ -1301,15 +1299,13 @@
         </svg>`,
 
         // Pose 2: Idea / Lightbulb 💡
-        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        `<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="54" r="40" fill="url(#gradMascot2)" stroke="#4ade80" stroke-width="3"/>
           <circle cx="36" cy="48" r="5.5" fill="#0f172a"/>
           <circle cx="64" cy="48" r="5.5" fill="#0f172a"/>
           <path d="M38 68 Q50 78 62 68" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-          <!-- Lightbulb above head -->
           <path d="M50 8 C44 8 40 12 40 17 C40 21 44 23 46 25 L54 25 C56 23 60 21 60 17 C60 12 56 8 50 8 Z" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
           <rect x="47" y="25" width="6" height="3" fill="#cbd5e1"/>
-          <!-- Glow rays -->
           <line x1="50" y1="2" x2="50" y2="5" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
           <line x1="36" y1="8" x2="39" y2="11" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
           <line x1="64" y1="8" x2="61" y2="11" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
@@ -1322,13 +1318,12 @@
         </svg>`,
 
         // Pose 3: Detective with Magnifying Glass 🔍
-        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        `<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="48" cy="50" r="40" fill="url(#gradMascot3)" stroke="#38bdf8" stroke-width="3"/>
           <circle cx="35" cy="44" r="5" fill="#0f172a"/>
           <circle cx="63" cy="44" r="8" fill="#38bdf8" opacity="0.3"/>
           <circle cx="63" cy="44" r="5" fill="#0f172a"/>
           <path d="M40 65 Q48 70 56 65" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
-          <!-- Magnifying Glass -->
           <circle cx="63" cy="44" r="14" stroke="#d4af37" stroke-width="3.5" fill="none"/>
           <line x1="74" y1="54" x2="88" y2="68" stroke="#92400e" stroke-width="4.5" stroke-linecap="round"/>
           <defs>
@@ -1340,15 +1335,13 @@
         </svg>`,
 
         // Pose 4: Mechanic / Technician 🔧
-        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        `<svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="52" r="40" fill="url(#gradMascot4)" stroke="#f59e0b" stroke-width="3"/>
-          <!-- Cap -->
           <path d="M22 40 Q50 20 78 40 L82 46 L18 46 Z" fill="#15803d" stroke="#166534" stroke-width="2"/>
           <ellipse cx="50" cy="46" rx="34" ry="4" fill="#166534"/>
           <circle cx="36" cy="54" r="5" fill="#0f172a"/>
           <circle cx="64" cy="54" r="5" fill="#0f172a"/>
           <path d="M40 70 Q50 64 60 70" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
-          <!-- Small wrench -->
           <path d="M78 68 L88 78" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
           <defs>
             <radialGradient id="gradMascot4" cx="40%" cy="40%" r="60%">
@@ -3334,7 +3327,6 @@
         mascotEl.classList.add('hidden');
         document.getElementById('kahootHostImgContainer').classList.remove('hidden');
       } else {
-        // Render fun thinking mascot!
         imgEl.classList.add('hidden');
         mascotEl.innerHTML = getThinkingMascotSVG(idx);
         mascotEl.classList.remove('hidden');

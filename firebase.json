@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "examen-ecogas",
+    "site": "capacitacion-ecogas",
     "public": ".",
     "ignore": [
       "firebase.json",
