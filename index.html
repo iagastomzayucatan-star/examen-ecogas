@@ -1115,16 +1115,24 @@
       </div>
 
       <!-- Quick Question Selector & Controls -->
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <span style="font-size: 12px; color: #cbd5e1; font-weight: 700;">Seleccionar Reactivo:</span>
-          <select id="editorQuestionSelector" onchange="handleEditorQuestionSelectorChange(this.value)" class="input-field" style="width: auto; padding: 5px 10px; font-size: 12px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button type="button" onclick="navigateEditorQuestion(-1)" class="btn-secondary" style="padding: 5px 10px; font-size: 11px;">
+            ⬅️ Ant
+          </button>
+          <select id="editorQuestionSelector" onchange="handleEditorQuestionSelectorChange(this.value)" class="input-field" style="width: auto; max-width: 320px; padding: 5px 10px; font-size: 12px; font-weight: 700;">
             <!-- Options populated in JS -->
           </select>
+          <button type="button" onclick="navigateEditorQuestion(1)" class="btn-secondary" style="padding: 5px 10px; font-size: 11px;">
+            Sig ➡️
+          </button>
+          <span id="editorQuestionCounterBadge" style="font-size: 11px; font-weight: 800; color: #86efac; padding: 2px 6px; background: rgba(74,222,128,0.1); border-radius: 6px;">
+            1 / 15
+          </span>
         </div>
         <div style="display: flex; gap: 6px;">
           <button onclick="addNewQuestionToEditor()" class="btn-primary" style="padding: 6px 12px; font-size: 11px;">
-            ➕ Nueva Pregunta
+            ➕ Nueva
           </button>
           <button onclick="deleteCurrentEditorQuestion()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; color: #fda4af;">
             🗑️ Eliminar
@@ -1136,8 +1144,8 @@
       <div style="flex: 1; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 10px;">
         
         <div>
-          <label class="input-label">Texto de la Pregunta:</label>
-          <textarea id="editQuestionText" rows="2" class="input-field" style="resize: vertical; font-size: 13px;" placeholder="Escribe aquí el enunciado..."></textarea>
+          <label class="input-label">Texto de la Pregunta (Se guarda automáticamente mientras escribes):</label>
+          <textarea id="editQuestionText" rows="2" class="input-field" style="resize: vertical; font-size: 13px; line-height: 1.4;" placeholder="Escribe aquí el enunciado..." oninput="handleQuestionInputAutoSave()"></textarea>
         </div>
 
         <!-- Image Selector & PC File Upload / Clipboard Paste Area -->
@@ -1158,7 +1166,7 @@
               <option value="img_flotilla.jpg">🚛 Flotillas Comerciales (Manual)</option>
               <option value="CUSTOM">🔗 Ingresar URL Web Externa</option>
             </select>
-            <input type="text" id="editQuestionCustomImageUrl" class="input-field hidden" placeholder="https://ejemplo.com/foto.jpg" oninput="previewCustomUrlImage()" />
+            <input type="text" id="editQuestionCustomImageUrl" class="input-field hidden" placeholder="https://ejemplo.com/foto.jpg" oninput="previewCustomUrlImage(); handleQuestionInputAutoSave();" />
           </div>
 
           <!-- Upload / Clipboard Dropzone Box -->
@@ -1208,27 +1216,27 @@
           <div style="display: flex; flex-direction: column; gap: 6px;">
             
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(226,27,60,0.15); border: 1px solid rgba(226,27,60,0.4); border-radius: 10px; padding: 6px 10px;">
-              <input type="radio" name="correctOptionRadio" value="0" id="optRadio0" style="cursor: pointer;" />
+              <input type="radio" name="correctOptionRadio" value="0" id="optRadio0" style="cursor: pointer;" onchange="handleQuestionInputAutoSave()" />
               <label for="optRadio0" style="font-weight: 800; color: #fda4af; font-size: 12px; width: 70px;">▲ Roja:</label>
-              <input type="text" id="editOpt0" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción A" />
+              <input type="text" id="editOpt0" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción A" oninput="handleQuestionInputAutoSave()" />
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(19,104,206,0.15); border: 1px solid rgba(19,104,206,0.4); border-radius: 10px; padding: 6px 10px;">
-              <input type="radio" name="correctOptionRadio" value="1" id="optRadio1" style="cursor: pointer;" />
+              <input type="radio" name="correctOptionRadio" value="1" id="optRadio1" style="cursor: pointer;" onchange="handleQuestionInputAutoSave()" />
               <label for="optRadio1" style="font-weight: 800; color: #93c5fd; font-size: 12px; width: 70px;">◆ Azul:</label>
-              <input type="text" id="editOpt1" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción B" />
+              <input type="text" id="editOpt1" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción B" oninput="handleQuestionInputAutoSave()" />
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(216,158,0,0.15); border: 1px solid rgba(216,158,0,0.4); border-radius: 10px; padding: 6px 10px;">
-              <input type="radio" name="correctOptionRadio" value="2" id="optRadio2" style="cursor: pointer;" />
+              <input type="radio" name="correctOptionRadio" value="2" id="optRadio2" style="cursor: pointer;" onchange="handleQuestionInputAutoSave()" />
               <label for="optRadio2" style="font-weight: 800; color: #fde047; font-size: 12px; width: 70px;">● Amarilla:</label>
-              <input type="text" id="editOpt2" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción C" />
+              <input type="text" id="editOpt2" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción C" oninput="handleQuestionInputAutoSave()" />
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(38,137,12,0.15); border: 1px solid rgba(38,137,12,0.4); border-radius: 10px; padding: 6px 10px;">
-              <input type="radio" name="correctOptionRadio" value="3" id="optRadio3" style="cursor: pointer;" />
+              <input type="radio" name="correctOptionRadio" value="3" id="optRadio3" style="cursor: pointer;" onchange="handleQuestionInputAutoSave()" />
               <label for="optRadio3" style="font-weight: 800; color: #86efac; font-size: 12px; width: 70px;">■ Verde:</label>
-              <input type="text" id="editOpt3" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción D" />
+              <input type="text" id="editOpt3" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción D" oninput="handleQuestionInputAutoSave()" />
             </div>
 
           </div>
@@ -1236,7 +1244,7 @@
 
         <div>
           <label class="input-label">Justificación Técnica / Explicación (Opcional):</label>
-          <input type="text" id="editQuestionExplanation" class="input-field" style="padding: 8px 12px; font-size: 12px;" placeholder="Explicación que se muestra al revisar resultados..." />
+          <input type="text" id="editQuestionExplanation" class="input-field" style="padding: 8px 12px; font-size: 12px;" placeholder="Explicación que se muestra al revisar resultados..." oninput="handleQuestionInputAutoSave()" />
         </div>
 
       </div>
@@ -1244,14 +1252,14 @@
       <!-- Action Buttons Footer -->
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; gap: 8px;">
         <button onclick="restoreDefaultQuestions()" class="btn-secondary" style="font-size: 11px;">
-          ♻️ Restaurar Preguntas del Manual
+          ♻️ Restaurar 15 Preguntas del Manual
         </button>
         <div style="display: flex; gap: 8px;">
-          <button onclick="saveCurrentQuestionEdits()" class="btn-gold" style="padding: 8px 16px; font-size: 12px;">
+          <button onclick="saveCurrentQuestionEdits()" class="btn-gold" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">
             💾 Guardar Reactivo
           </button>
           <button onclick="applyAndCloseQuestionsEditor()" class="btn-primary" style="padding: 8px 18px; font-size: 12px; font-weight: 800;">
-            ✓ Listo y Aplicar
+            ✓ Listo y Salir
           </button>
         </div>
       </div>
@@ -2188,6 +2196,23 @@
     // ==========================================
     let currentEditingQuestionIndex = 0;
 
+    function showToast(msg) {
+      let toast = document.getElementById('appGlobalToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'appGlobalToast';
+        toast.style.cssText = 'position:fixed; top:20px; right:20px; z-index:99999; background:rgba(13,40,24,0.96); border:1px solid #4ade80; color:#ffffff; padding:12px 20px; border-radius:12px; font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.8); backdrop-filter:blur(8px); display:flex; align-items:center; gap:10px; transition:all 0.3s ease; opacity:0; transform:translateY(-10px); pointer-events:none;';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+      }, 3500);
+    }
+
     function openQuestionsEditorModal() {
       populateEditorQuestionSelector();
       loadQuestionIntoEditor(0);
@@ -2195,29 +2220,50 @@
     }
 
     function closeQuestionsEditorModal() {
+      saveQuestionFromForm(currentEditingQuestionIndex, true);
       document.getElementById('modalQuestionsEditor').classList.add('hidden');
     }
 
     function populateEditorQuestionSelector() {
       const sel = document.getElementById('editorQuestionSelector');
       sel.innerHTML = EXAM_QUESTIONS.map((q, idx) => {
-        const shortQ = q.question.length > 35 ? q.question.substring(0, 35) + '...' : q.question;
+        const text = q.question || `Reactivo #${idx + 1}`;
+        const shortQ = text.length > 35 ? text.substring(0, 35) + '...' : text;
         return `<option value="${idx}">Pregunta ${idx + 1}: ${shortQ}</option>`;
       }).join('');
       sel.value = currentEditingQuestionIndex;
+
+      const counterBadge = document.getElementById('editorQuestionCounterBadge');
+      if (counterBadge) {
+        counterBadge.innerText = `${currentEditingQuestionIndex + 1} / ${EXAM_QUESTIONS.length}`;
+      }
     }
 
     function handleEditorQuestionSelectorChange(newIdx) {
-      // Auto-save whatever was currently being edited before switching
       saveQuestionFromForm(currentEditingQuestionIndex, true);
       currentEditingQuestionIndex = parseInt(newIdx);
       loadQuestionIntoEditor(currentEditingQuestionIndex);
+    }
+
+    function navigateEditorQuestion(delta) {
+      saveQuestionFromForm(currentEditingQuestionIndex, true);
+      const next = currentEditingQuestionIndex + delta;
+      if (next >= 0 && next < EXAM_QUESTIONS.length) {
+        currentEditingQuestionIndex = next;
+        populateEditorQuestionSelector();
+        loadQuestionIntoEditor(currentEditingQuestionIndex);
+      }
     }
 
     function loadQuestionIntoEditor(idx) {
       currentEditingQuestionIndex = parseInt(idx);
       const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
       if (!q) return;
+
+      const counterBadge = document.getElementById('editorQuestionCounterBadge');
+      if (counterBadge) {
+        counterBadge.innerText = `${currentEditingQuestionIndex + 1} / ${EXAM_QUESTIONS.length}`;
+      }
 
       document.getElementById('editQuestionText').value = q.question || '';
       
@@ -2266,6 +2312,58 @@
       document.getElementById('editQuestionExplanation').value = q.explanation || '';
     }
 
+    let autoSaveDebounceTimer = null;
+    function handleQuestionInputAutoSave() {
+      const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
+      if (!q) return;
+
+      const qText = document.getElementById('editQuestionText').value;
+      const imgChoice = document.getElementById('editQuestionImageSelect').value;
+      let finalImg = imgChoice;
+      if (imgChoice === 'CUSTOM') {
+        finalImg = document.getElementById('editQuestionCustomImageUrl').value.trim() || 'NONE';
+      } else if (imgChoice === 'UPLOAD') {
+        finalImg = currentUploadedImageBase64 || 'NONE';
+      }
+
+      const opt0 = document.getElementById('editOpt0').value;
+      const opt1 = document.getElementById('editOpt1').value;
+      const opt2 = document.getElementById('editOpt2').value;
+      const opt3 = document.getElementById('editOpt3').value;
+
+      const selectedRadio = document.querySelector('input[name="correctOptionRadio"]:checked');
+      const correctIdx = selectedRadio ? parseInt(selectedRadio.value) : 0;
+      const explanation = document.getElementById('editQuestionExplanation').value;
+
+      q.question = qText || `Pregunta #${currentEditingQuestionIndex + 1}`;
+      q.image = (finalImg === 'NONE' ? '' : finalImg);
+      q.options = [opt0 || 'Opción A', opt1 || 'Opción B', opt2 || 'Opción C', opt3 || 'Opción D'];
+      q.correctIndex = correctIdx;
+      q.explanation = explanation;
+
+      // Update dropdown option label live so user sees it right away
+      const sel = document.getElementById('editorQuestionSelector');
+      if (sel && sel.options[currentEditingQuestionIndex]) {
+        const shortQ = q.question.length > 35 ? q.question.substring(0, 35) + '...' : q.question;
+        sel.options[currentEditingQuestionIndex].text = `Pregunta ${currentEditingQuestionIndex + 1}: ${shortQ}`;
+      }
+
+      const badge = document.getElementById('editorCloudSyncBadge');
+      if (badge) {
+        badge.innerText = '⚡ Guardando cambios...';
+        badge.style.color = '#fde047';
+      }
+
+      // Save to localStorage immediately
+      localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+
+      // Debounced cloud save
+      if (autoSaveDebounceTimer) clearTimeout(autoSaveDebounceTimer);
+      autoSaveDebounceTimer = setTimeout(() => {
+        persistQuestions();
+      }, 600);
+    }
+
     function handleEditorImageChange() {
       const val = document.getElementById('editQuestionImageSelect').value;
       const customInp = document.getElementById('editQuestionCustomImageUrl');
@@ -2290,6 +2388,7 @@
         customInp.classList.add('hidden');
         uploadBox.classList.add('hidden');
       }
+      handleQuestionInputAutoSave();
     }
 
     function triggerFileInputIfPrompt(e) {
@@ -2346,6 +2445,7 @@
           document.getElementById('editorImagePrompt').classList.add('hidden');
           document.getElementById('editorImagePreviewWrapper').classList.remove('hidden');
           document.getElementById('editorImagePreview').src = optimizedBase64;
+          handleQuestionInputAutoSave();
         };
         img.src = evt.target.result;
       };
@@ -2358,6 +2458,7 @@
       document.getElementById('editorImagePreviewWrapper').classList.add('hidden');
       document.getElementById('editorImagePrompt').classList.remove('hidden');
       document.getElementById('editorFileInput').value = '';
+      handleQuestionInputAutoSave();
     }
 
     async function pasteImageFromClipboard() {
@@ -2373,12 +2474,12 @@
               }
             }
           }
-          alert('No se detectó ninguna imagen en el portapapeles. Copia o toma captura de una imagen primero y presiona Ctrl + V.');
+          showToast('⚠️ No se detectó imagen en el portapapeles. Copia una imagen y presiona Ctrl + V.');
         } else {
-          alert('Haz clic en esta ventana y presiona Ctrl + V en tu teclado para pegar la imagen.');
+          showToast('📋 Haz clic en el recuadro y presiona Ctrl + V en tu teclado para pegar la imagen.');
         }
       } catch (err) {
-        alert('Para pegar imágenes, haz clic dentro del cuadro y presiona Ctrl + V en tu teclado.');
+        showToast('📋 Presiona Ctrl + V en tu teclado para pegar la imagen.');
       }
     }
 
@@ -2430,7 +2531,7 @@
 
       const qText = document.getElementById('editQuestionText').value.trim();
       if (!qText) {
-        if (!silent) alert('Por favor escribe el texto de la pregunta.');
+        if (!silent) showToast('⚠️ Por favor escribe el texto de la pregunta.');
         return false;
       }
 
@@ -2462,18 +2563,20 @@
       return true;
     }
 
-    function saveCurrentQuestionEdits() {
+    async function saveCurrentQuestionEdits() {
       const ok = saveQuestionFromForm(currentEditingQuestionIndex, false);
       if (ok) {
-        alert('✓ Pregunta e imagen guardadas correctamente.');
+        await persistQuestions();
+        showToast(`✅ Pregunta #${currentEditingQuestionIndex + 1} guardada y sincronizada correctamente en Firebase.`);
       }
     }
 
-    function applyAndCloseQuestionsEditor() {
+    async function applyAndCloseQuestionsEditor() {
       saveQuestionFromForm(currentEditingQuestionIndex, true);
+      await persistQuestions();
       populateEditorQuestionSelector();
       closeQuestionsEditorModal();
-      alert('✓ Todos los cambios de preguntas e imágenes se aplicaron y sincronizaron en Firebase.');
+      showToast('✅ Todos los cambios de reactivos e imágenes quedaron guardados y sincronizados.');
     }
 
     function addNewQuestionToEditor() {
@@ -2493,11 +2596,12 @@
       currentEditingQuestionIndex = EXAM_QUESTIONS.length - 1;
       populateEditorQuestionSelector();
       loadQuestionIntoEditor(currentEditingQuestionIndex);
+      showToast(`➕ Nueva Pregunta #${EXAM_QUESTIONS.length} agregada.`);
     }
 
     function deleteCurrentEditorQuestion() {
       if (EXAM_QUESTIONS.length <= 1) {
-        alert('Debe existir al menos una pregunta en el examen.');
+        showToast('⚠️ Debe existir al menos una pregunta en el examen.');
         return;
       }
 
@@ -2508,16 +2612,17 @@
       currentEditingQuestionIndex = Math.max(0, currentEditingQuestionIndex - 1);
       populateEditorQuestionSelector();
       loadQuestionIntoEditor(currentEditingQuestionIndex);
+      showToast('🗑️ Pregunta eliminada correctamente.');
     }
 
-    function restoreDefaultQuestions() {
+    async function restoreDefaultQuestions() {
       if (!confirm('¿Restaurar todas las 15 preguntas oficiales del manual de ECOGAS LP?')) return;
       EXAM_QUESTIONS = JSON.parse(JSON.stringify(DEFAULT_EXAM_QUESTIONS));
-      persistQuestions();
+      await persistQuestions();
       currentEditingQuestionIndex = 0;
       populateEditorQuestionSelector();
       loadQuestionIntoEditor(0);
-      alert('✓ Preguntas restauradas de fábrica.');
+      showToast('♻️ 15 Preguntas oficiales del manual restauradas de fábrica.');
     }
 
     async function persistQuestions() {
@@ -2532,7 +2637,8 @@
           const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
           await window.firestoreSetDoc(docRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
           if (badge) {
-            badge.innerText = '☁️ Sincronizado en Firebase Cloud';
+            const nowTime = new Date().toLocaleTimeString();
+            badge.innerText = `☁️ Sincronizado en Firebase (${nowTime})`;
             badge.style.color = '#4ade80';
           }
         } catch(e) {
