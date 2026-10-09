@@ -25,14 +25,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" media="print" onload="this.media='all'" />
 
-  <!-- LUXURY DARK EMERALD CSS & ANIMATIONS -->
+  <!-- LUXURY DARK EMERALD CSS & RESPONSIVE ADAPTATIONS -->
   <style>
     :root {
       --bg-deep: #05140b;
       --bg-dark: #081e11;
       --bg-surface: #0d2818;
-      --bg-card: rgba(14, 43, 26, 0.85);
-      --border-card: rgba(74, 222, 128, 0.2);
+      --bg-card: rgba(14, 43, 26, 0.88);
+      --border-card: rgba(74, 222, 128, 0.22);
       --brand-green: #2ea428;
       --brand-green-light: #4ade80;
       --brand-green-glow: rgba(46, 164, 40, 0.4);
@@ -145,7 +145,7 @@
     }
 
     /* Inputs & Form */
-    .input-group { margin-bottom: 16px; }
+    .input-group { margin-bottom: 14px; }
     .input-label {
       display: block;
       font-size: 11px;
@@ -153,16 +153,16 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: #86efac;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .input-field {
       width: 100%;
-      padding: 13px 15px;
+      padding: 11px 14px;
       background: #040e07;
       border: 1px solid #165a2d;
       border-radius: 12px;
       color: #ffffff;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       outline: none;
       transition: all 0.2s;
@@ -174,12 +174,12 @@
 
     /* Buttons */
     .btn-primary {
-      padding: 13px 20px;
+      padding: 12px 18px;
       background: linear-gradient(135deg, #2ea428 0%, #15803d 100%);
       color: #ffffff;
       border: 1px solid #4ade80;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -189,7 +189,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
     .btn-primary:hover {
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
@@ -200,7 +200,7 @@
     .btn-primary:active { transform: scale(0.97); }
 
     .btn-kahoot {
-      padding: 12px 18px;
+      padding: 11px 16px;
       background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       color: #ffffff;
       border: 1px solid #a5b4fc;
@@ -221,18 +221,18 @@
     }
 
     .btn-gold {
-      padding: 12px 20px;
+      padding: 11px 18px;
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #05140b;
       border: 1px solid #fde68a;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
       transition: all 0.2s;
     }
@@ -242,12 +242,12 @@
     }
 
     .btn-secondary {
-      padding: 10px 16px;
+      padding: 9px 14px;
       background: #092112;
       color: #cbd5e1;
       border: 1px solid #165a2d;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -263,15 +263,15 @@
 
     /* Option Items */
     .option-item {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border: 1px solid rgba(74, 222, 128, 0.15);
       border-radius: 14px;
       background: rgba(14, 43, 26, 0.5);
       cursor: pointer;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .option-item:hover {
@@ -287,8 +287,8 @@
     }
 
     .option-letter {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
       background: #092112;
       border: 1px solid #165a2d;
@@ -296,7 +296,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       flex-shrink: 0;
     }
@@ -327,35 +327,41 @@
     }
     .pulse-scale { animation: pulseKahoot 1.5s infinite; }
 
+    @keyframes mascotFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+    .animate-mascot { animation: mascotFloat 3s ease-in-out infinite; }
+
     /* KAHOOT BUTTONS GRID */
     .kahoot-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 14px;
+      gap: 10px;
+      margin-top: 10px;
     }
     .kahoot-btn {
-      padding: 24px 16px;
+      padding: 16px 12px;
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       color: #ffffff;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
     }
     .kahoot-btn:active { transform: scale(0.95); }
-    .k-red { background: var(--kahoot-red); border-bottom: 5px solid #a30e25; }
-    .k-blue { background: var(--kahoot-blue); border-bottom: 5px solid #0d468e; }
-    .k-yellow { background: var(--kahoot-yellow); border-bottom: 5px solid #946c00; }
-    .k-green { background: var(--kahoot-green); border-bottom: 5px solid #185907; }
+    .k-red { background: var(--kahoot-red); border-bottom: 4px solid #a30e25; }
+    .k-blue { background: var(--kahoot-blue); border-bottom: 4px solid #0d468e; }
+    .k-yellow { background: var(--kahoot-yellow); border-bottom: 4px solid #946c00; }
+    .k-green { background: var(--kahoot-green); border-bottom: 4px solid #185907; }
 
     .hidden { display: none !important; }
     .text-green { color: var(--brand-green-light); }
@@ -375,6 +381,67 @@
       padding: 0 12px;
       cursor: pointer;
       font-weight: bold;
+    }
+
+    /* RESPONSIVE ADAPTATIONS (MOBILE & PROJECTOR) */
+    @media (max-width: 640px) {
+      main { padding: 10px; }
+      #kahootHostQuestionView {
+        padding: 12px;
+      }
+      #kahootHostQText {
+        font-size: 15px !important;
+        margin-bottom: 8px !important;
+        line-height: 1.25 !important;
+      }
+      #kahootHostImgContainer {
+        max-height: 130px !important;
+        margin-bottom: 8px !important;
+      }
+      #kahootHostImg {
+        max-height: 130px !important;
+      }
+      .kahoot-grid {
+        gap: 6px !important;
+        margin-top: 6px !important;
+      }
+      .kahoot-btn {
+        padding: 10px 8px !important;
+        font-size: 11px !important;
+        border-radius: 10px !important;
+        min-height: 60px !important;
+      }
+      .kahoot-btn span:first-child {
+        font-size: 16px !important;
+      }
+      #kahootHostCardText0, #kahootHostCardText1, #kahootHostCardText2, #kahootHostCardText3 {
+        font-size: 11px !important;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #kahootHostQuestionView {
+        padding: 24px 30px;
+        min-height: 540px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      #kahootHostQText {
+        font-size: 24px;
+        margin-bottom: 12px;
+      }
+      #kahootHostImgContainer {
+        max-height: 210px;
+        margin-bottom: 12px;
+      }
+      .kahoot-grid {
+        gap: 12px;
+      }
+      .kahoot-btn {
+        padding: 18px 16px;
+        font-size: 15px;
+      }
     }
 
     /* Print styles */
@@ -463,6 +530,9 @@
         <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 7px 10px; font-size: 13px;" title="Activar/Silenciar Música">
           🔊
         </button>
+        <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 7px 10px; font-size: 13px;" title="Editar Preguntas del Examen y Kahoot">
+          ⚙️
+        </button>
         <button onclick="switchMode('kahoot-join')" class="btn-kahoot" style="padding: 7px 12px; font-size: 12px;">
           🎮 Batalla de Equipos
         </button>
@@ -475,17 +545,17 @@
 
     <!-- 1. VIEW: LOGIN (INDIVIDUAL EXAM) -->
     <section id="viewLogin" class="animate-enter" style="max-width: 460px; margin: 20px auto;">
-      <div class="glass-panel" style="padding: 26px;">
-        <div style="text-align: center; margin-bottom: 22px;">
-          <div style="width: 58px; height: 58px; border-radius: 18px; background: rgba(46, 164, 40, 0.2); border: 1.5px solid var(--brand-green); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">
+      <div class="glass-panel" style="padding: 24px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="width: 54px; height: 54px; border-radius: 18px; background: rgba(46, 164, 40, 0.2); border: 1.5px solid var(--brand-green); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
             🎓
           </div>
-          <h1 style="font-size: 22px; font-weight: 900; color: #ffffff;">Capacitación ECOGAS LP</h1>
+          <h1 style="font-size: 21px; font-weight: 900; color: #ffffff;">Capacitación ECOGAS LP</h1>
           <p style="font-size: 12px; color: #86efac; margin-top: 4px;">Evaluación Técnica, Precios, Promociones y Operación</p>
         </div>
 
         <!-- Mode Selectors Tab -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; background: #040e07; padding: 4px; border-radius: 14px; border: 1px solid #165a2d;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; background: #040e07; padding: 4px; border-radius: 14px; border: 1px solid #165a2d;">
           <button type="button" class="btn-primary" style="padding: 10px 8px; font-size: 12px; border-radius: 10px;">
             📝 Examen Personal
           </button>
@@ -539,7 +609,7 @@
           </button>
         </form>
 
-        <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center;">
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center;">
           <span style="font-size: 11px; color: #86efac;">¿Vas a jugar la trivia grupal en vivo?</span>
           <button onclick="switchMode('kahoot-join')" class="btn-kahoot" style="width: 100%; margin-top: 8px;">
             🚀 Entrar a la Batalla de Equipos
@@ -549,33 +619,33 @@
     </section>
 
     <!-- 2. VIEW: EXAM (STREAMLINED FAST QUESTION FLOW) -->
-    <section id="viewExam" class="hidden" style="display: flex; flex-direction: column; gap: 14px;">
+    <section id="viewExam" class="hidden" style="display: flex; flex-direction: column; gap: 12px;">
       
       <!-- Top banner & Timer -->
-      <div class="glass-panel" style="padding: 14px 18px; border-left: 4px solid var(--brand-green); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+      <div class="glass-panel" style="padding: 12px 16px; border-left: 4px solid var(--brand-green); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
         <div>
           <div style="font-size: 10px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1px;">● Evaluación Activa</div>
-          <h2 id="examStudentGreeting" style="font-size: 17px; font-weight: 800; color: #ffffff; margin-top: 2px;">Examen ECOGAS LP</h2>
+          <h2 id="examStudentGreeting" style="font-size: 16px; font-weight: 800; color: #ffffff; margin-top: 2px;">Examen ECOGAS LP</h2>
         </div>
-        <div style="background: #040e07; padding: 6px 14px; border-radius: 10px; border: 1px solid #165a2d; text-align: center;">
+        <div style="background: #040e07; padding: 5px 12px; border-radius: 10px; border: 1px solid #165a2d; text-align: center;">
           <div style="font-size: 9px; color: #86efac; text-transform: uppercase; font-weight: 700;">Tiempo</div>
-          <div id="examTimer" style="font-family: monospace; font-size: 15px; font-weight: 800; color: #ffffff;">00:00</div>
+          <div id="examTimer" style="font-family: monospace; font-size: 14px; font-weight: 800; color: #ffffff;">00:00</div>
         </div>
       </div>
 
       <!-- Linear Progress Bar -->
-      <div class="glass-panel" style="padding: 12px 16px;">
-        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #86efac; margin-bottom: 6px;">
+      <div class="glass-panel" style="padding: 10px 14px;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #86efac; margin-bottom: 5px;">
           <span id="progressText">Pregunta 1 de 15</span>
           <span id="progressPercentage" class="text-green">0%</span>
         </div>
-        <div style="width: 100%; height: 8px; background: #06170d; border-radius: 4px; overflow: hidden; border: 1px solid #165a2d;">
+        <div style="width: 100%; height: 6px; background: #06170d; border-radius: 3px; overflow: hidden; border: 1px solid #165a2d;">
           <div id="progressBar" style="height: 100%; background: linear-gradient(90deg, #2ea428, #4ade80); width: 6.6%; transition: width 0.35s ease;"></div>
         </div>
       </div>
 
-      <!-- Current Question Box (One at a time) -->
-      <div id="questionContainer" class="glass-panel animate-enter" style="padding: 22px;"></div>
+      <!-- Current Question Box -->
+      <div id="questionContainer" class="glass-panel animate-enter" style="padding: 18px;"></div>
 
       <!-- Navigation buttons -->
       <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 2px;">
@@ -583,7 +653,7 @@
           ⬅ Anterior
         </button>
         <div style="display: flex; gap: 8px;">
-          <button id="btnNextQuestion" onclick="navigateQuestion(1)" class="btn-primary" style="padding: 10px 18px; font-size: 13px;">
+          <button id="btnNextQuestion" onclick="navigateQuestion(1)" class="btn-primary" style="padding: 9px 16px; font-size: 12px;">
             Siguiente ➔
           </button>
           <button id="btnFinishExam" onclick="promptSubmitExam()" class="btn-gold hidden">
@@ -595,91 +665,94 @@
 
     <!-- 3. VIEW: RESULTS & PERSONAL DIPLOMA -->
     <section id="viewResults" class="hidden animate-enter" style="max-width: 680px; margin: 0 auto;">
-      <div class="glass-panel" style="padding: 26px; text-align: center;">
-        <div id="resultBadgeContainer" style="margin-bottom: 12px;"></div>
-        <h2 id="resultStudentName" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-bottom: 6px;">Nombre</h2>
-        <p id="resultFeedbackMsg" style="font-size: 13px; color: #cbd5e1; margin-bottom: 22px;"></p>
+      <div class="glass-panel" style="padding: 24px; text-align: center;">
+        <div id="resultBadgeContainer" style="margin-bottom: 10px;"></div>
+        <h2 id="resultStudentName" style="font-size: 21px; font-weight: 900; color: #ffffff; margin-bottom: 6px;">Nombre</h2>
+        <p id="resultFeedbackMsg" style="font-size: 13px; color: #cbd5e1; margin-bottom: 20px;"></p>
 
         <!-- Stats -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 22px;">
-          <div class="glass-card" style="padding: 14px;">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+          <div class="glass-card" style="padding: 12px;">
             <div style="font-size: 11px; color: #86efac; text-transform: uppercase; font-weight: 700;">Calificación Obtenida</div>
-            <div id="statScore" style="font-size: 26px; font-weight: 900; color: #4ade80; margin-top: 4px;">--</div>
+            <div id="statScore" style="font-size: 24px; font-weight: 900; color: #4ade80; margin-top: 4px;">--</div>
           </div>
-          <div class="glass-card" style="padding: 14px;">
+          <div class="glass-card" style="padding: 12px;">
             <div style="font-size: 11px; color: #86efac; text-transform: uppercase; font-weight: 700;">Aciertos</div>
-            <div id="statCorrect" style="font-size: 26px; font-weight: 900; color: #38bdf8; margin-top: 4px;">--</div>
+            <div id="statCorrect" style="font-size: 24px; font-weight: 900; color: #38bdf8; margin-top: 4px;">--</div>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button id="btnDownloadDiplomaUser" onclick="downloadDiplomaFromCurrentResult()" class="btn-gold pulse-glow" style="width: 100%; padding: 15px; font-size: 15px;">
+          <button id="btnDownloadDiplomaUser" onclick="downloadDiplomaFromCurrentResult()" class="btn-gold pulse-glow" style="width: 100%; padding: 14px; font-size: 14px;">
             🎓 Descargar Mi Diploma Oficial HD
           </button>
-          <button onclick="toggleReviewAnswers()" class="btn-secondary" style="width: 100%; justify-content: center; padding: 12px;">
+          <button onclick="toggleReviewAnswers()" class="btn-secondary" style="width: 100%; justify-content: center; padding: 11px;">
             📋 <span id="btnReviewText">Ver Revisión Detallada de Preguntas</span>
           </button>
         </div>
       </div>
 
-      <div id="reviewAnswersSection" class="hidden" style="margin-top: 16px;">
-        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 12px;">Desglose de Respuestas:</h3>
-        <div id="reviewAnswersList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="reviewAnswersSection" class="hidden" style="margin-top: 14px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 10px;">Desglose de Respuestas:</h3>
+        <div id="reviewAnswersList" style="display: flex; flex-direction: column; gap: 10px;"></div>
       </div>
     </section>
 
     <!-- 4. VIEW: ADMIN PANEL -->
-    <section id="viewAdmin" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
-      <div class="glass-panel" style="padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+    <section id="viewAdmin" class="hidden" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="glass-panel" style="padding: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
         <div>
-          <span style="font-size: 10px; font-weight: 800; background: rgba(46, 164, 40, 0.2); color: #4ade80; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(46, 164, 40, 0.4);">👑 PANEL DE ADMINISTRADOR</span>
-          <h2 style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 6px;">Evaluaciones y Control</h2>
-          <p style="font-size: 12px; color: #94a3b8;">Monitoreo en tiempo real, diplomas y control de sala Kahoot.</p>
+          <span style="font-size: 10px; font-weight: 800; background: rgba(46, 164, 40, 0.2); color: #4ade80; padding: 3px 8px; border-radius: 20px; border: 1px solid rgba(46, 164, 40, 0.4);">👑 PANEL DE ADMINISTRADOR</span>
+          <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 4px;">Evaluaciones y Control</h2>
+          <p style="font-size: 11px; color: #94a3b8;">Monitoreo en tiempo real, diplomas y editor de preguntas.</p>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <button onclick="switchMode('kahoot-host')" class="btn-kahoot">
-            🎮 Abrir Proyector Kahoot
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 7px 12px; font-size: 12px;">
+            ⚙️ Editar Preguntas
           </button>
-          <button onclick="exportResultsToCSV()" class="btn-secondary">
+          <button onclick="switchMode('kahoot-host')" class="btn-kahoot" style="padding: 7px 12px; font-size: 12px;">
+            🎮 Proyector Kahoot
+          </button>
+          <button onclick="exportResultsToCSV()" class="btn-secondary" style="padding: 7px 12px; font-size: 12px;">
             📊 Exportar CSV
           </button>
-          <button onclick="loadAdminData(true)" class="btn-primary" style="padding: 8px 14px; font-size: 12px;">
+          <button onclick="loadAdminData(true)" class="btn-primary" style="padding: 7px 12px; font-size: 12px;">
             🔄 Actualizar
           </button>
         </div>
       </div>
 
       <!-- KPI Metrics -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-        <div class="glass-panel" style="padding: 14px; text-align: center;">
-          <div style="font-size: 11px; color: #86efac; text-transform: uppercase;">Total Evaluaciones</div>
-          <div id="adminStatTotal" style="font-size: 24px; font-weight: 900; color: #ffffff; margin-top: 4px;">0</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+        <div class="glass-panel" style="padding: 12px; text-align: center;">
+          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Total Evaluaciones</div>
+          <div id="adminStatTotal" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">0</div>
         </div>
-        <div class="glass-panel" style="padding: 14px; text-align: center;">
-          <div style="font-size: 11px; color: #86efac; text-transform: uppercase;">Aprobados</div>
-          <div id="adminStatApproved" style="font-size: 24px; font-weight: 900; color: #4ade80; margin-top: 4px;">0</div>
+        <div class="glass-panel" style="padding: 12px; text-align: center;">
+          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Aprobados</div>
+          <div id="adminStatApproved" style="font-size: 22px; font-weight: 900; color: #4ade80; margin-top: 2px;">0</div>
         </div>
-        <div class="glass-panel" style="padding: 14px; text-align: center;">
-          <div style="font-size: 11px; color: #86efac; text-transform: uppercase;">Reprobados</div>
-          <div id="adminStatFailed" style="font-size: 24px; font-weight: 900; color: #fb7185; margin-top: 4px;">0</div>
+        <div class="glass-panel" style="padding: 12px; text-align: center;">
+          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Reprobados</div>
+          <div id="adminStatFailed" style="font-size: 22px; font-weight: 900; color: #fb7185; margin-top: 2px;">0</div>
         </div>
-        <div class="glass-panel" style="padding: 14px; text-align: center;">
-          <div style="font-size: 11px; color: #86efac; text-transform: uppercase;">Promedio</div>
-          <div id="adminStatAvgScore" style="font-size: 24px; font-weight: 900; color: #f59e0b; margin-top: 4px;">0 pts</div>
+        <div class="glass-panel" style="padding: 12px; text-align: center;">
+          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Promedio</div>
+          <div id="adminStatAvgScore" style="font-size: 22px; font-weight: 900; color: #f59e0b; margin-top: 2px;">0 pts</div>
         </div>
       </div>
 
       <!-- Search & Filters -->
-      <div class="glass-panel" style="padding: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+      <div class="glass-panel" style="padding: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
         <input 
           type="text" 
           id="adminSearchInput" 
           oninput="filterAdminSubmissions()" 
           placeholder="🔍 Buscar participante..." 
           class="input-field" 
-          style="flex: 1; min-width: 180px; padding: 8px 12px; font-size: 12px;"
+          style="flex: 1; min-width: 160px; padding: 7px 10px; font-size: 12px;"
         />
-        <select id="adminStatusFilter" onchange="filterAdminSubmissions()" class="input-field" style="width: auto; padding: 8px 12px; font-size: 12px;">
+        <select id="adminStatusFilter" onchange="filterAdminSubmissions()" class="input-field" style="width: auto; padding: 7px 10px; font-size: 12px;">
           <option value="ALL">Todos los Estados</option>
           <option value="APPROVED">Solo Aprobados (>= 80 pts)</option>
           <option value="FAILED">Solo No Aprobados (&lt; 80 pts)</option>
@@ -692,44 +765,44 @@
           <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;">
             <thead>
               <tr style="background: #040e07; border-bottom: 1px solid #165a2d; color: #86efac; text-transform: uppercase; font-size: 10px;">
-                <th style="padding: 12px 16px;">Participante</th>
-                <th style="padding: 12px 10px;">Fecha</th>
-                <th style="padding: 12px 10px; text-align: center;">Calificación</th>
-                <th style="padding: 12px 10px; text-align: center;">Estado</th>
-                <th style="padding: 12px 16px; text-align: center;">Acciones</th>
+                <th style="padding: 10px 14px;">Participante</th>
+                <th style="padding: 10px;">Fecha</th>
+                <th style="padding: 10px; text-align: center;">Calificación</th>
+                <th style="padding: 10px; text-align: center;">Estado</th>
+                <th style="padding: 10px 14px; text-align: center;">Acciones</th>
               </tr>
             </thead>
             <tbody id="adminTableBody"></tbody>
           </table>
         </div>
-        <div id="adminTableEmpty" class="hidden" style="padding: 30px; text-align: center; color: #94a3b8;">
+        <div id="adminTableEmpty" class="hidden" style="padding: 24px; text-align: center; color: #94a3b8;">
           No hay evaluaciones registradas aún.
         </div>
       </div>
     </section>
 
     <!-- 5. VIEW: KAHOOT JOIN & REGISTER TEAM (FOR PHONES) -->
-    <section id="viewKahootJoin" class="hidden animate-enter" style="max-width: 480px; margin: 15px auto;">
-      <div class="glass-panel" style="padding: 24px;">
-        <div style="text-align: center; margin-bottom: 18px;">
-          <div style="width: 60px; height: 60px; border-radius: 20px; background: linear-gradient(135deg, #6366f1, #4f46e5); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 0 20px rgba(99,102,241,0.5);">
+    <section id="viewKahootJoin" class="hidden animate-enter" style="max-width: 460px; margin: 15px auto;">
+      <div class="glass-panel" style="padding: 22px;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #6366f1, #4f46e5); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 0 20px rgba(99,102,241,0.5);">
             🎮
           </div>
-          <h2 style="font-size: 22px; font-weight: 900; color: #ffffff;">ECOGAS BATTLE</h2>
+          <h2 style="font-size: 21px; font-weight: 900; color: #ffffff;">ECOGAS BATTLE</h2>
           <p style="font-size: 12px; color: #a5b4fc; margin-top: 2px;">Trivia de Capacitación en Vivo por Equipos</p>
         </div>
 
         <!-- Role Selector (Team vs Host) -->
-        <div style="display: flex; gap: 8px; margin-bottom: 18px;">
-          <button type="button" class="btn-kahoot" style="flex: 1; padding: 9px; font-size: 12px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <button type="button" class="btn-kahoot" style="flex: 1; padding: 8px; font-size: 12px;">
             📱 Unirse como Equipo
           </button>
-          <button type="button" onclick="switchMode('kahoot-host')" class="btn-secondary" style="flex: 1; justify-content: center; padding: 9px; font-size: 12px;">
+          <button type="button" onclick="switchMode('kahoot-host')" class="btn-secondary" style="flex: 1; justify-content: center; padding: 8px; font-size: 12px;">
             📺 Proyector / Host
           </button>
         </div>
 
-        <form id="kahootJoinTeamForm" onsubmit="handleKahootTeamJoin(event)" style="display: flex; flex-direction: column; gap: 14px;">
+        <form id="kahootJoinTeamForm" onsubmit="handleKahootTeamJoin(event)" style="display: flex; flex-direction: column; gap: 12px;">
           
           <div class="input-group" style="margin-bottom: 0;">
             <label class="input-label" for="inputKahootTeamName">🚗 Nombre del Equipo:</label>
@@ -739,15 +812,15 @@
               required 
               placeholder="Ej. Los Halcones de Tomza" 
               class="input-field" 
-              style="font-size: 15px; font-weight: 700;"
+              style="font-size: 14px; font-weight: 700;"
             />
           </div>
 
           <!-- Dynamic Team Members List -->
           <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
               <label class="input-label" style="margin-bottom: 0;">👥 Integrantes del Equipo:</label>
-              <button type="button" onclick="addTeamMemberInput()" class="btn-secondary" style="padding: 3px 8px; font-size: 11px;">
+              <button type="button" onclick="addTeamMemberInput()" class="btn-secondary" style="padding: 2px 7px; font-size: 10px;">
                 ➕ Agregar
               </button>
             </div>
@@ -760,10 +833,10 @@
                 <button type="button" onclick="removeMemberRow(this)" class="member-delete-btn">✕</button>
               </div>
             </div>
-            <span style="font-size: 10px; color: #86efac; display: block; margin-top: 4px;">Pueden registrar tantos integrantes como deseen por equipo.</span>
+            <span style="font-size: 10px; color: #86efac; display: block; margin-top: 3px;">Pueden registrar tantos integrantes como deseen por equipo.</span>
           </div>
 
-          <!-- Optional Room PIN (Defaults to current active room) -->
+          <!-- Room PIN -->
           <div class="input-group" style="margin-bottom: 0;">
             <label class="input-label" for="inputKahootPin">Código de Sala (PIN):</label>
             <input 
@@ -772,21 +845,21 @@
               value="2026" 
               placeholder="PIN de Sala (Default: 2026)" 
               class="input-field" 
-              style="text-align: center; font-size: 16px; letter-spacing: 2px; font-weight: 800;"
+              style="text-align: center; font-size: 15px; letter-spacing: 2px; font-weight: 800;"
             />
           </div>
 
-          <div id="kahootJoinErrorMsg" class="hidden" style="padding: 10px; border-radius: 10px; background: rgba(225, 29, 72, 0.2); border: 1px solid rgba(225, 29, 72, 0.5); color: #fda4af; font-size: 12px;">
+          <div id="kahootJoinErrorMsg" class="hidden" style="padding: 9px; border-radius: 10px; background: rgba(225, 29, 72, 0.2); border: 1px solid rgba(225, 29, 72, 0.5); color: #fda4af; font-size: 11px;">
             <span id="kahootJoinErrorText">Error al unirse a la sala.</span>
           </div>
 
-          <button type="submit" id="btnSubmitTeamJoin" class="btn-kahoot" style="padding: 14px; font-size: 15px;">
+          <button type="submit" id="btnSubmitTeamJoin" class="btn-kahoot" style="padding: 13px; font-size: 14px;">
             ¡REGISTRAR EQUIPO Y ENTRAR! 🚀
           </button>
         </form>
 
-        <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center;">
-          <button onclick="switchMode('exam')" class="btn-secondary" style="font-size: 12px;">
+        <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; text-align: center;">
+          <button onclick="switchMode('exam')" class="btn-secondary" style="font-size: 11px;">
             ⬅ Volver al Examen Individual
           </button>
         </div>
@@ -794,33 +867,31 @@
     </section>
 
     <!-- 6. VIEW: KAHOOT TEAM WAITING ROOM (LOBBY ON MOBILE) -->
-    <section id="viewKahootPlayerLobby" class="hidden animate-enter" style="max-width: 480px; margin: 20px auto; text-align: center;">
-      <div class="glass-panel" style="padding: 26px;">
-        <div style="font-size: 40px; margin-bottom: 8px;">⏳</div>
-        <div style="display: inline-block; padding: 4px 12px; border-radius: 20px; background: rgba(74,222,128,0.2); border: 1px solid #4ade80; color: #86efac; font-size: 11px; font-weight: 800; margin-bottom: 10px;">
+    <section id="viewKahootPlayerLobby" class="hidden animate-enter" style="max-width: 460px; margin: 15px auto; text-align: center;">
+      <div class="glass-panel" style="padding: 22px;">
+        <div style="font-size: 36px; margin-bottom: 6px;">⏳</div>
+        <div style="display: inline-block; padding: 3px 10px; border-radius: 20px; background: rgba(74,222,128,0.2); border: 1px solid #4ade80; color: #86efac; font-size: 11px; font-weight: 800; margin-bottom: 8px;">
           SALA DE ESPERA ACTIVA
         </div>
         
-        <h2 id="kahootPlayerLobbyTeamName" style="font-size: 24px; font-weight: 900; color: #ffffff; margin-bottom: 6px;">Equipo</h2>
-        <div id="kahootPlayerLobbyMembersList" style="font-size: 12px; color: #a5b4fc; margin-bottom: 20px;">
-          <!-- Member tags injected here -->
-        </div>
+        <h2 id="kahootPlayerLobbyTeamName" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-bottom: 4px;">Equipo</h2>
+        <div id="kahootPlayerLobbyMembersList" style="font-size: 12px; color: #a5b4fc; margin-bottom: 16px;"></div>
 
         <!-- Big Ready Button -->
-        <div style="margin-bottom: 20px;">
-          <button id="btnPlayerToggleReady" onclick="togglePlayerReadyState()" class="btn-gold pulse-glow" style="width: 100%; padding: 16px; font-size: 16px;">
+        <div style="margin-bottom: 16px;">
+          <button id="btnPlayerToggleReady" onclick="togglePlayerReadyState()" class="btn-gold pulse-glow" style="width: 100%; padding: 14px; font-size: 15px;">
             <span id="btnPlayerReadyText">✅ ¡ESTAMOS LISTOS! (Confirmar)</span>
           </button>
-          <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 6px;">Pulsa el botón para avisarle al moderador que su equipo está listo.</span>
+          <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 5px;">Pulsa el botón para avisarle al moderador que su equipo está listo.</span>
         </div>
 
-        <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: #cbd5e1;">Equipos conectados en total:</div>
-          <div id="kahootPlayerLobbyCount" style="font-size: 18px; font-weight: 900; color: #4ade80; margin-top: 2px;">1 equipo</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.06);">
+          <div style="font-size: 11px; color: #cbd5e1;">Equipos conectados en total:</div>
+          <div id="kahootPlayerLobbyCount" style="font-size: 17px; font-weight: 900; color: #4ade80; margin-top: 2px;">1 equipo</div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-          <button onclick="leaveTeamLobby()" class="btn-secondary" style="font-size: 11px; padding: 6px 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <button onclick="leaveTeamLobby()" class="btn-secondary" style="font-size: 11px; padding: 5px 10px;">
             ✕ Cambiar Equipo
           </button>
           <p style="font-size: 11px; color: #94a3b8; margin: 0;">Mira el proyector...</p>
@@ -829,171 +900,180 @@
     </section>
 
     <!-- 7. VIEW: KAHOOT TEAM GAMEPLAY (4 TACTILE BUTTONS ON PHONE) -->
-    <section id="viewKahootPlayerGame" class="hidden animate-enter" style="max-width: 500px; margin: 10px auto;">
-      <div class="glass-panel" style="padding: 14px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-        <span id="kahootPlayerScoreBadge" style="font-size: 15px; font-weight: 900; color: #facc15;">🔥 0 pts</span>
-        <span id="kahootPlayerQBadge" style="font-size: 12px; font-weight: 800; color: #86efac;">Pregunta 1</span>
+    <section id="viewKahootPlayerGame" class="hidden animate-enter" style="max-width: 480px; margin: 10px auto;">
+      <div class="glass-panel" style="padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <span id="kahootPlayerScoreBadge" style="font-size: 14px; font-weight: 900; color: #facc15;">🔥 0 pts</span>
+        <span id="kahootPlayerQBadge" style="font-size: 11px; font-weight: 800; color: #86efac;">Pregunta 1</span>
       </div>
 
       <!-- 4 Kahoot Touch Buttons for Phone -->
       <div class="kahoot-grid" id="kahootPlayerButtonsContainer">
         <button onclick="sendKahootTeamAnswer(0)" class="kahoot-btn k-red">
-          <span style="font-size: 32px;">▲</span>
-          <span id="kOptLabel0" style="font-size: 13px; text-align: center; font-weight: 700;">Opción A</span>
+          <span style="font-size: 26px;">▲</span>
+          <span id="kOptLabel0" style="font-size: 12px; text-align: center; font-weight: 700;">Opción A</span>
         </button>
         <button onclick="sendKahootTeamAnswer(1)" class="kahoot-btn k-blue">
-          <span style="font-size: 32px;">◆</span>
-          <span id="kOptLabel1" style="font-size: 13px; text-align: center; font-weight: 700;">Opción B</span>
+          <span style="font-size: 26px;">◆</span>
+          <span id="kOptLabel1" style="font-size: 12px; text-align: center; font-weight: 700;">Opción B</span>
         </button>
         <button onclick="sendKahootTeamAnswer(2)" class="kahoot-btn k-yellow">
-          <span style="font-size: 32px;">●</span>
-          <span id="kOptLabel2" style="font-size: 13px; text-align: center; font-weight: 700;">Opción C</span>
+          <span style="font-size: 26px;">●</span>
+          <span id="kOptLabel2" style="font-size: 12px; text-align: center; font-weight: 700;">Opción C</span>
         </button>
         <button onclick="sendKahootTeamAnswer(3)" class="kahoot-btn k-green">
-          <span style="font-size: 32px;">■</span>
-          <span id="kOptLabel3" style="font-size: 13px; text-align: center; font-weight: 700;">Opción D</span>
+          <span style="font-size: 26px;">■</span>
+          <span id="kOptLabel3" style="font-size: 12px; text-align: center; font-weight: 700;">Opción D</span>
         </button>
       </div>
 
       <!-- Player Answer Feedback State -->
-      <div id="kahootPlayerFeedback" class="hidden glass-panel" style="padding: 28px; text-align: center; margin-top: 14px;">
-        <div id="kahootPlayerFeedbackIcon" style="font-size: 48px; margin-bottom: 8px;">🎉</div>
-        <h3 id="kahootPlayerFeedbackTitle" style="font-size: 20px; font-weight: 900;">¡RESPUESTA REGISTRADA!</h3>
-        <p id="kahootPlayerFeedbackPoints" style="font-size: 16px; font-weight: 800; color: #4ade80; margin-top: 6px;">Esperando al resto del grupo...</p>
+      <div id="kahootPlayerFeedback" class="hidden glass-panel" style="padding: 24px; text-align: center; margin-top: 12px;">
+        <div id="kahootPlayerFeedbackIcon" style="font-size: 42px; margin-bottom: 6px;">🎉</div>
+        <h3 id="kahootPlayerFeedbackTitle" style="font-size: 18px; font-weight: 900;">¡RESPUESTA REGISTRADA!</h3>
+        <p id="kahootPlayerFeedbackPoints" style="font-size: 14px; font-weight: 800; color: #4ade80; margin-top: 4px;">Esperando al resto del grupo...</p>
       </div>
     </section>
 
     <!-- 8. VIEW: KAHOOT HOST SCREEN (PROYECTOR / MODERADOR) -->
-    <section id="viewKahootHost" class="hidden animate-enter" style="max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+    <section id="viewKahootHost" class="hidden animate-enter" style="max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
       
       <!-- Host Lobby View -->
-      <div id="kahootHostLobby" class="glass-panel" style="padding: 28px; text-align: center;">
+      <div id="kahootHostLobby" class="glass-panel" style="padding: 24px; text-align: center;">
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 11px; font-weight: 800; background: rgba(99,102,241,0.25); border: 1px solid #6366f1; color: #a5b4fc; padding: 4px 12px; border-radius: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 11px; font-weight: 800; background: rgba(99,102,241,0.25); border: 1px solid #6366f1; color: #a5b4fc; padding: 3px 10px; border-radius: 20px;">
             📺 PANTALLA PRINCIPAL / PROYECTOR
           </span>
-          <div style="display: flex; gap: 8px;">
-            <button onclick="toggleAudio()" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;">
+          <div style="display: flex; gap: 6px;">
+            <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Configurar Preguntas">
+              ⚙️ Preguntas
+            </button>
+            <button onclick="toggleAudio()" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;">
               🎵 <span id="hostAudioBtnText">Música: ON</span>
             </button>
-            <button onclick="clearAllTeamsHost()" class="btn-secondary" style="padding: 4px 10px; font-size: 12px; color: #fda4af;" title="Limpiar todos los equipos para empezar de cero">
+            <button onclick="clearAllTeamsHost()" class="btn-secondary" style="padding: 4px 8px; font-size: 11px; color: #fda4af;" title="Limpiar todos los equipos para empezar de cero">
               🗑️ Reiniciar Sala
             </button>
-            <button onclick="switchMode('admin')" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;">
+            <button onclick="switchMode('admin')" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;">
               Panel Admin
             </button>
           </div>
         </div>
 
-        <h1 style="font-size: 30px; font-weight: 900; color: #ffffff;">BATALLA DE CAPACITACIÓN ECOGAS LP</h1>
-        <p style="font-size: 14px; color: #cbd5e1; margin-top: 4px;">
+        <h1 style="font-size: 26px; font-weight: 900; color: #ffffff;">BATALLA DE CAPACITACIÓN ECOGAS LP</h1>
+        <p style="font-size: 13px; color: #cbd5e1; margin-top: 2px;">
           Abran en sus celulares: <b style="color: #4ade80;">https://examen-ecogas.web.app</b> y pulsen <b>"Batalla de Equipos"</b>
         </p>
 
         <!-- Big PIN Box -->
-        <div style="background: #040e07; border: 2px solid var(--brand-green-light); border-radius: 20px; padding: 14px 28px; display: inline-block; margin: 16px auto; box-shadow: 0 0 30px rgba(74,222,128,0.3);">
-          <div style="font-size: 11px; font-weight: 800; color: #86efac; letter-spacing: 2px;">CÓDIGO DE SALA (PIN):</div>
-          <div id="kahootHostPinDisplay" style="font-size: 44px; font-weight: 900; color: #ffffff; letter-spacing: 6px; font-family: monospace;">2026</div>
+        <div style="background: #040e07; border: 2px solid var(--brand-green-light); border-radius: 18px; padding: 12px 24px; display: inline-block; margin: 14px auto; box-shadow: 0 0 25px rgba(74,222,128,0.3);">
+          <div style="font-size: 10px; font-weight: 800; color: #86efac; letter-spacing: 2px;">CÓDIGO DE SALA (PIN):</div>
+          <div id="kahootHostPinDisplay" style="font-size: 38px; font-weight: 900; color: #ffffff; letter-spacing: 5px; font-family: monospace;">2026</div>
         </div>
 
         <!-- Live Teams Grid in Lobby -->
-        <div style="margin: 16px 0; text-align: left;">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 12px;">
-            <div style="font-size: 14px; font-weight: 800; color: #ffffff;">
+        <div style="margin: 12px 0; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; margin-bottom: 10px;">
+            <div style="font-size: 13px; font-weight: 800; color: #ffffff;">
               🚗 Equipos Conectados (<span id="kahootHostPlayersCount" style="color: #4ade80;">0</span>):
             </div>
-            <div style="font-size: 12px; color: #86efac;">
+            <div style="font-size: 11px; color: #86efac;">
               Listos: <b id="kahootHostReadyCount">0</b>
             </div>
           </div>
-          <div id="kahootHostPlayersList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; min-height: 80px;">
+          <div id="kahootHostPlayersList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; min-height: 70px;">
             <!-- Joined team cards injected here -->
           </div>
         </div>
 
-        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 12px;">
-          <button onclick="promptStartKahootGameHost()" class="btn-primary" style="font-size: 16px; padding: 16px 36px; border-radius: 14px;">
+        <div style="margin-top: 16px; display: flex; justify-content: center; gap: 10px;">
+          <button onclick="promptStartKahootGameHost()" class="btn-primary" style="font-size: 15px; padding: 14px 30px; border-radius: 12px;">
             🚀 ¿ESTÁN LISTOS TODOS? ¡INICIAR BATALLA!
           </button>
         </div>
       </div>
 
       <!-- Host Countdown Splash (3... 2... 1...) -->
-      <div id="kahootHostCountdownSplash" class="hidden glass-panel" style="padding: 60px 20px; text-align: center;">
-        <div style="font-size: 20px; font-weight: 800; color: #86efac; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">
+      <div id="kahootHostCountdownSplash" class="hidden glass-panel" style="padding: 50px 20px; text-align: center;">
+        <div style="font-size: 18px; font-weight: 800; color: #86efac; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">
           ¡Prepárense Equipos!
         </div>
-        <div id="kahootCountdownNumber" style="font-size: 120px; font-weight: 900; color: #facc15; text-shadow: 0 0 40px rgba(250,204,21,0.8);" class="pulse-scale">
+        <div id="kahootCountdownNumber" style="font-size: 100px; font-weight: 900; color: #facc15; text-shadow: 0 0 35px rgba(250,204,21,0.8);" class="pulse-scale">
           3
         </div>
-        <div style="font-size: 18px; color: #cbd5e1; margin-top: 10px;">Iniciando la batalla en vivo...</div>
+        <div style="font-size: 16px; color: #cbd5e1; margin-top: 8px;">Iniciando la batalla en vivo...</div>
       </div>
 
-      <!-- Host Question Screen -->
-      <div id="kahootHostQuestionView" class="hidden glass-panel" style="padding: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
-          <span id="kahootHostQIndex" style="font-size: 14px; font-weight: 800; color: #86efac;">Pregunta 1 de 15</span>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div id="kahootHostAnsweredCount" style="font-size: 12px; color: #cbd5e1;">Respondieron: <b>0</b></div>
-            <div id="kahootHostTimer" style="font-size: 24px; font-weight: 900; width: 48px; height: 48px; border-radius: 50%; background: #040e07; border: 2px solid var(--brand-green-light); display: flex; align-items: center; justify-content: center; color: #4ade80;">20</div>
-            <button onclick="revealKahootAnswerHost()" class="btn-secondary" style="font-size: 11px;">Omitir Tiempo ➔</button>
+      <!-- Host Question Screen (Responsive 1-Screen) -->
+      <div id="kahootHostQuestionView" class="hidden glass-panel">
+        
+        <!-- Top bar with Timer, Index, Answer count, Gear -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="kahootHostQIndex" style="font-size: 13px; font-weight: 800; color: #86efac;">Pregunta 1 de 15</span>
+            <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 2px 6px; font-size: 10px;" title="Editar esta o más preguntas">⚙️</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div id="kahootHostAnsweredCount" style="font-size: 11px; color: #cbd5e1;">Respondieron: <b>0</b></div>
+            <div id="kahootHostTimer" style="font-size: 20px; font-weight: 900; width: 42px; height: 42px; border-radius: 50%; background: #040e07; border: 2px solid var(--brand-green-light); display: flex; align-items: center; justify-content: center; color: #4ade80;">20</div>
+            <button onclick="revealKahootAnswerHost()" class="btn-secondary" style="font-size: 10px; padding: 4px 8px;">Omitir ➔</button>
           </div>
         </div>
 
-        <h2 id="kahootHostQText" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-bottom: 16px; line-height: 1.35;">
+        <h2 id="kahootHostQText" style="font-size: 19px; font-weight: 900; color: #ffffff; margin-bottom: 10px; line-height: 1.35; text-align: center;">
           Texto de la pregunta
         </h2>
 
-        <!-- Reference image illustration -->
-        <div id="kahootHostImgContainer" style="max-height: 220px; overflow: hidden; border-radius: 14px; margin-bottom: 16px; display: flex; justify-content: center; background: #040e07;">
-          <img id="kahootHostImg" src="" alt="Referencia" style="max-height: 220px; max-width: 100%; object-fit: contain; border-radius: 12px;" />
+        <!-- Reference Image or Thinking Mascot Container -->
+        <div id="kahootHostImgContainer" style="max-height: 190px; overflow: hidden; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; background: #040e07; border: 1px solid rgba(74,222,128,0.15);">
+          <img id="kahootHostImg" src="" alt="Referencia" style="max-height: 190px; max-width: 100%; object-fit: contain; border-radius: 10px;" />
+          <div id="kahootHostMascotContainer" class="hidden animate-mascot" style="padding: 10px; display: flex; align-items: center; justify-content: center;"></div>
         </div>
 
         <!-- 4 Option cards on Host -->
         <div class="kahoot-grid">
-          <div id="kHostCard0" class="kahoot-btn k-red" style="align-items: flex-start; text-align: left; padding: 16px;">
-            <span style="font-size: 18px; font-weight: 900;">▲ <span id="kHostText0">Opción A</span></span>
+          <div id="kHostCard0" class="kahoot-btn k-red" style="align-items: flex-start; text-align: left; padding: 12px 14px;">
+            <span style="font-size: 15px; font-weight: 900;">▲ <span id="kHostText0">Opción A</span></span>
           </div>
-          <div id="kHostCard1" class="kahoot-btn k-blue" style="align-items: flex-start; text-align: left; padding: 16px;">
-            <span style="font-size: 18px; font-weight: 900;">◆ <span id="kHostText1">Opción B</span></span>
+          <div id="kHostCard1" class="kahoot-btn k-blue" style="align-items: flex-start; text-align: left; padding: 12px 14px;">
+            <span style="font-size: 15px; font-weight: 900;">◆ <span id="kHostText1">Opción B</span></span>
           </div>
-          <div id="kHostCard2" class="kahoot-btn k-yellow" style="align-items: flex-start; text-align: left; padding: 16px;">
-            <span style="font-size: 18px; font-weight: 900;">● <span id="kHostText2">Opción C</span></span>
+          <div id="kHostCard2" class="kahoot-btn k-yellow" style="align-items: flex-start; text-align: left; padding: 12px 14px;">
+            <span style="font-size: 15px; font-weight: 900;">● <span id="kHostText2">Opción C</span></span>
           </div>
-          <div id="kHostCard3" class="kahoot-btn k-green" style="align-items: flex-start; text-align: left; padding: 16px;">
-            <span style="font-size: 18px; font-weight: 900;">■ <span id="kHostText3">Opción D</span></span>
+          <div id="kHostCard3" class="kahoot-btn k-green" style="align-items: flex-start; text-align: left; padding: 12px 14px;">
+            <span style="font-size: 15px; font-weight: 900;">■ <span id="kHostText3">Opción D</span></span>
           </div>
         </div>
       </div>
 
       <!-- Host Leaderboard Screen -->
-      <div id="kahootHostLeaderboard" class="hidden glass-panel" style="padding: 26px; text-align: center;">
-        <h2 style="font-size: 26px; font-weight: 900; color: #facc15; margin-bottom: 16px;">🏆 TABLA DE PUNTUACIONES DE EQUIPOS</h2>
-        <div id="kahootHostLeaderboardList" style="display: flex; flex-direction: column; gap: 10px; max-width: 550px; margin: 0 auto 20px;">
+      <div id="kahootHostLeaderboard" class="hidden glass-panel" style="padding: 22px; text-align: center;">
+        <h2 style="font-size: 22px; font-weight: 900; color: #facc15; margin-bottom: 14px;">🏆 TABLA DE PUNTUACIONES DE EQUIPOS</h2>
+        <div id="kahootHostLeaderboardList" style="display: flex; flex-direction: column; gap: 8px; max-width: 520px; margin: 0 auto 16px;">
           <!-- Top teams injected here -->
         </div>
-        <button onclick="nextKahootQuestionHost()" class="btn-primary" style="font-size: 15px; padding: 14px 30px;">
+        <button onclick="nextKahootQuestionHost()" class="btn-primary" style="font-size: 14px; padding: 12px 26px;">
           Siguiente Pregunta ➔
         </button>
       </div>
 
       <!-- Host Final Podium Screen -->
-      <div id="kahootHostPodium" class="hidden glass-panel" style="padding: 30px; text-align: center;">
-        <div style="font-size: 50px;">👑</div>
-        <h1 style="font-size: 32px; font-weight: 900; color: #facc15; margin-bottom: 6px;">¡PODIO DE EQUIPOS GANADORES!</h1>
-        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 24px;">Gran Final de la Batalla de Capacitación ECOGAS LP</p>
+      <div id="kahootHostPodium" class="hidden glass-panel" style="padding: 24px; text-align: center;">
+        <div style="font-size: 42px;">👑</div>
+        <h1 style="font-size: 26px; font-weight: 900; color: #facc15; margin-bottom: 4px;">¡PODIO DE EQUIPOS GANADORES!</h1>
+        <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 18px;">Gran Final de la Batalla de Capacitación ECOGAS LP</p>
 
-        <div id="kahootPodiumContainer" style="display: flex; justify-content: center; align-items: flex-end; gap: 16px; margin-bottom: 30px; min-height: 220px;">
+        <div id="kahootPodiumContainer" style="display: flex; justify-content: center; align-items: flex-end; gap: 14px; margin-bottom: 24px; min-height: 190px;">
           <!-- 1st, 2nd, 3rd podium cards injected here -->
         </div>
 
         <!-- Buttons for Team Recognition Diplomas -->
-        <div id="podiumRecognitionButtons" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <div id="podiumRecognitionButtons" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 16px;">
           <!-- Recognition buttons generated dynamically -->
         </div>
 
-        <button onclick="switchMode('admin')" class="btn-secondary" style="padding: 12px 24px;">
+        <button onclick="switchMode('admin')" class="btn-secondary" style="padding: 10px 20px;">
           ⬅ Salir al Panel de Administrador
         </button>
       </div>
@@ -1001,6 +1081,123 @@
     </section>
 
   </main>
+
+  <!-- MODAL: ⚙️ CONFIGURADOR / EDITOR DE PREGUNTAS Y TRIVIAS -->
+  <div id="modalQuestionsEditor" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;">
+    <div class="glass-panel" style="max-width: 780px; width: 100%; padding: 20px; max-height: 94vh; display: flex; flex-direction: column; gap: 12px;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">⚙️</span>
+          <div>
+            <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Editor de Preguntas & Banco de Reactivos</h3>
+            <p style="font-size: 11px; color: #86efac;">Modifica enunciados, opciones, imágenes o añade nuevas preguntas.</p>
+          </div>
+        </div>
+        <button onclick="closeQuestionsEditorModal()" style="background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <!-- Quick Question Selector & Controls -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 12px; color: #cbd5e1; font-weight: 700;">Seleccionar Reactivo:</span>
+          <select id="editorQuestionSelector" onchange="loadQuestionIntoEditor(this.value)" class="input-field" style="width: auto; padding: 5px 10px; font-size: 12px;">
+            <!-- Options populated in JS -->
+          </select>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button onclick="addNewQuestionToEditor()" class="btn-primary" style="padding: 6px 12px; font-size: 11px;">
+            ➕ Nueva Pregunta
+          </button>
+          <button onclick="deleteCurrentEditorQuestion()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; color: #fda4af;">
+            🗑️ Eliminar
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Form Fields -->
+      <div style="flex: 1; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 10px;">
+        
+        <div>
+          <label class="input-label">Texto de la Pregunta:</label>
+          <textarea id="editQuestionText" rows="2" class="input-field" style="resize: vertical; font-size: 13px;" placeholder="Escribe aquí el enunciado..."></textarea>
+        </div>
+
+        <div>
+          <label class="input-label">Imagen de Referencia o Ilustración:</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <select id="editQuestionImageSelect" onchange="handleEditorImageChange()" class="input-field" style="font-size: 12px;">
+              <option value="NONE">🤔 Ninguna (Mostrar Monito Pensando)</option>
+              <option value="img_4cil.jpg">🚗 Equipo 4 Cilindros</option>
+              <option value="img_6cil.jpg">🚙 Equipo 6 Cilindros</option>
+              <option value="img_8cil.jpg">🚚 Equipo 8 Cilindros</option>
+              <option value="img_toroidal.jpg">🍩 Tanque Toroidal (Dona)</option>
+              <option value="img_cilindrico.jpg">🛢️ Tanque Cilíndrico</option>
+              <option value="img_vaporizador.jpg">⚙️ Vaporizador / Reductor</option>
+              <option value="img_inyectores.jpg">⚡ Riel de Inyectores</option>
+              <option value="img_flotilla.jpg">🚛 Flotillas Comerciales</option>
+              <option value="CUSTOM">🔗 Ingresar URL de Imagen</option>
+            </select>
+            <input type="text" id="editQuestionCustomImageUrl" class="input-field hidden" placeholder="https://ejemplo.com/foto.jpg" />
+          </div>
+        </div>
+
+        <!-- 4 Options Inputs with Correct Answer Radio -->
+        <div>
+          <label class="input-label">Opciones de Respuesta (Marca la opción correcta con el botón circular):</label>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(226,27,60,0.15); border: 1px solid rgba(226,27,60,0.4); border-radius: 10px; padding: 6px 10px;">
+              <input type="radio" name="correctOptionRadio" value="0" id="optRadio0" style="cursor: pointer;" />
+              <label for="optRadio0" style="font-weight: 800; color: #fda4af; font-size: 12px; width: 70px;">▲ Roja:</label>
+              <input type="text" id="editOpt0" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción A" />
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(19,104,206,0.15); border: 1px solid rgba(19,104,206,0.4); border-radius: 10px; padding: 6px 10px;">
+              <input type="radio" name="correctOptionRadio" value="1" id="optRadio1" style="cursor: pointer;" />
+              <label for="optRadio1" style="font-weight: 800; color: #93c5fd; font-size: 12px; width: 70px;">◆ Azul:</label>
+              <input type="text" id="editOpt1" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción B" />
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(216,158,0,0.15); border: 1px solid rgba(216,158,0,0.4); border-radius: 10px; padding: 6px 10px;">
+              <input type="radio" name="correctOptionRadio" value="2" id="optRadio2" style="cursor: pointer;" />
+              <label for="optRadio2" style="font-weight: 800; color: #fde047; font-size: 12px; width: 70px;">● Amarilla:</label>
+              <input type="text" id="editOpt2" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción C" />
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(38,137,12,0.15); border: 1px solid rgba(38,137,12,0.4); border-radius: 10px; padding: 6px 10px;">
+              <input type="radio" name="correctOptionRadio" value="3" id="optRadio3" style="cursor: pointer;" />
+              <label for="optRadio3" style="font-weight: 800; color: #86efac; font-size: 12px; width: 70px;">■ Verde:</label>
+              <input type="text" id="editOpt3" class="input-field" style="padding: 6px 10px; font-size: 12px;" placeholder="Opción D" />
+            </div>
+
+          </div>
+        </div>
+
+        <div>
+          <label class="input-label">Justificación Técnica / Explicación (Opcional):</label>
+          <input type="text" id="editQuestionExplanation" class="input-field" style="padding: 8px 12px; font-size: 12px;" placeholder="Explicación que se muestra al revisar resultados..." />
+        </div>
+
+      </div>
+
+      <!-- Action Buttons Footer -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; gap: 8px;">
+        <button onclick="restoreDefaultQuestions()" class="btn-secondary" style="font-size: 11px;">
+          ♻️ Restaurar Preguntas del Manual
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="saveCurrentQuestionEdits()" class="btn-gold" style="padding: 8px 16px; font-size: 12px;">
+            💾 Guardar Reactivo
+          </button>
+          <button onclick="closeQuestionsEditorModal()" class="btn-primary" style="padding: 8px 16px; font-size: 12px;">
+            ✓ Listo y Aplicar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- MODAL: CONFIRMACIÓN DE INICIO DE BATALLA -->
   <div id="modalConfirmStartBattle" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 16px;">
@@ -1066,15 +1263,104 @@
   </div>
 
   <!-- FOOTER -->
-  <footer style="margin-top: auto; padding: 16px; border-top: 1px solid rgba(74, 222, 128, 0.15); text-align: center; font-size: 11px; color: #86efac; background: rgba(5, 20, 11, 0.95);">
+  <footer style="margin-top: auto; padding: 14px; border-top: 1px solid rgba(74, 222, 128, 0.15); text-align: center; font-size: 11px; color: #86efac; background: rgba(5, 20, 11, 0.95);">
     <strong style="color: #4ade80;">ECOGAS LP</strong> &bull; Grupo Tomza &bull; Mérida &bull; Tizimín &bull; Ticul &bull; Campeche &bull; Coatzacoalcos &bull; Minatitlán
   </footer>
 
-  <!-- SCRIPT LOGIC (EXAM, KAHOOT, AUDIO SYNTH, DIPLOMA) -->
+  <!-- SCRIPT LOGIC (EXAM, KAHOOT, AUDIO SYNTH, DIPLOMA, QUESTION EDITOR, MASCOTS) -->
   <script>
     const LOGO_ECOGAS_SRC = "data:image/png;base64,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";
     const FIRMA_ALBERTO_SRC = "data:image/png;base64,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";
     const FIRMA_ANDRES_SRC = "data:image/png;base64,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";
+
+    // ==========================================
+    // 🤔 ANIMATED THINKING MASCOTS (4 POSES)
+    // ==========================================
+    function getThinkingMascotSVG(poseIndex = 0) {
+      const poses = [
+        // Pose 1: Thinking / Hand on chin 🤔
+        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="42" fill="url(#gradMascot1)" stroke="#d4af37" stroke-width="3"/>
+          <circle cx="36" cy="42" r="5" fill="#0f172a"/>
+          <circle cx="64" cy="38" r="5" fill="#0f172a"/>
+          <path d="M30 32 Q36 28 42 32" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M58 28 Q64 24 70 28" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M42 66 Q50 60 58 66" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+          <!-- Hand on chin -->
+          <ellipse cx="62" cy="68" rx="8" ry="6" fill="#fde047" stroke="#d4af37" stroke-width="2"/>
+          <circle cx="58" cy="72" r="4" fill="#fde047"/>
+          <!-- Question marks -->
+          <text x="75" y="30" font-size="18" font-weight="bold" fill="#facc15" opacity="0.9">?</text>
+          <text x="14" y="38" font-size="14" font-weight="bold" fill="#4ade80" opacity="0.8">?</text>
+          <defs>
+            <radialGradient id="gradMascot1" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="100%" stop-color="#eab308"/>
+            </radialGradient>
+          </defs>
+        </svg>`,
+
+        // Pose 2: Idea / Lightbulb 💡
+        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="54" r="40" fill="url(#gradMascot2)" stroke="#4ade80" stroke-width="3"/>
+          <circle cx="36" cy="48" r="5.5" fill="#0f172a"/>
+          <circle cx="64" cy="48" r="5.5" fill="#0f172a"/>
+          <path d="M38 68 Q50 78 62 68" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- Lightbulb above head -->
+          <path d="M50 8 C44 8 40 12 40 17 C40 21 44 23 46 25 L54 25 C56 23 60 21 60 17 C60 12 56 8 50 8 Z" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+          <rect x="47" y="25" width="6" height="3" fill="#cbd5e1"/>
+          <!-- Glow rays -->
+          <line x1="50" y1="2" x2="50" y2="5" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="8" x2="39" y2="11" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+          <line x1="64" y1="8" x2="61" y2="11" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <radialGradient id="gradMascot2" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#bbf7d0"/>
+              <stop offset="100%" stop-color="#22c55e"/>
+            </radialGradient>
+          </defs>
+        </svg>`,
+
+        // Pose 3: Detective with Magnifying Glass 🔍
+        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="48" cy="50" r="40" fill="url(#gradMascot3)" stroke="#38bdf8" stroke-width="3"/>
+          <circle cx="35" cy="44" r="5" fill="#0f172a"/>
+          <circle cx="63" cy="44" r="8" fill="#38bdf8" opacity="0.3"/>
+          <circle cx="63" cy="44" r="5" fill="#0f172a"/>
+          <path d="M40 65 Q48 70 56 65" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+          <!-- Magnifying Glass -->
+          <circle cx="63" cy="44" r="14" stroke="#d4af37" stroke-width="3.5" fill="none"/>
+          <line x1="74" y1="54" x2="88" y2="68" stroke="#92400e" stroke-width="4.5" stroke-linecap="round"/>
+          <defs>
+            <radialGradient id="gradMascot3" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#bae6fd"/>
+              <stop offset="100%" stop-color="#0284c7"/>
+            </radialGradient>
+          </defs>
+        </svg>`,
+
+        // Pose 4: Mechanic / Technician 🔧
+        `<svg width="130" height="130" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="52" r="40" fill="url(#gradMascot4)" stroke="#f59e0b" stroke-width="3"/>
+          <!-- Cap -->
+          <path d="M22 40 Q50 20 78 40 L82 46 L18 46 Z" fill="#15803d" stroke="#166534" stroke-width="2"/>
+          <ellipse cx="50" cy="46" rx="34" ry="4" fill="#166534"/>
+          <circle cx="36" cy="54" r="5" fill="#0f172a"/>
+          <circle cx="64" cy="54" r="5" fill="#0f172a"/>
+          <path d="M40 70 Q50 64 60 70" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+          <!-- Small wrench -->
+          <path d="M78 68 L88 78" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+          <defs>
+            <radialGradient id="gradMascot4" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#fed7aa"/>
+              <stop offset="100%" stop-color="#f97316"/>
+            </radialGradient>
+          </defs>
+        </svg>`
+      ];
+
+      return poses[poseIndex % poses.length];
+    }
 
     // ==========================================
     // 🎵 WEB AUDIO API KAHOOT SYNTHESIZER
@@ -1134,14 +1420,14 @@
         this.stopMusic();
         this.init();
         const notes = [
-          { f: 130.81, d: 0.2, g: 0.12 }, // C3
+          { f: 130.81, d: 0.2, g: 0.12 },
           { f: 130.81, d: 0.15, g: 0.10 },
-          { f: 155.56, d: 0.2, g: 0.12 }, // Eb3
-          { f: 174.61, d: 0.2, g: 0.12 }, // F3
-          { f: 196.00, d: 0.25, g: 0.14 }, // G3
-          { f: 174.61, d: 0.15, g: 0.10 }, // F3
-          { f: 233.08, d: 0.2, g: 0.12 }, // Bb3
-          { f: 261.63, d: 0.3, g: 0.14 }, // C4
+          { f: 155.56, d: 0.2, g: 0.12 },
+          { f: 174.61, d: 0.2, g: 0.12 },
+          { f: 196.00, d: 0.25, g: 0.14 },
+          { f: 174.61, d: 0.15, g: 0.10 },
+          { f: 233.08, d: 0.2, g: 0.12 },
+          { f: 261.63, d: 0.3, g: 0.14 },
         ];
         let step = 0;
         const playBar = () => {
@@ -1165,7 +1451,6 @@
             setTimeout(() => this.playTone(330, 'sine', 0.12, 0.10), 250);
             setTimeout(() => this.playTone(440, 'triangle', 0.1, 0.08), 500);
           } else {
-            // Intensified countdown in last 5s
             this.playTone(587.33, 'sawtooth', 0.12, 0.18);
             this.playTone(293.66, 'square', 0.1, 0.15);
           }
@@ -1218,8 +1503,10 @@
       if (hostBtn) hostBtn.innerText = isMuted ? 'Música: OFF' : 'Música: ON';
     }
 
-    // 15 PROFESSIONAL QUESTIONS WITH REALISTIC PLAUSIBLE OPTIONS & PDF IMAGES
-    const EXAM_QUESTIONS = [
+    // ==========================================
+    // 📋 QUESTIONS STATE & DEFAULT CATALOG
+    // ==========================================
+    const DEFAULT_EXAM_QUESTIONS = [
       {
         id: 1,
         question: "¿Cuál es el porcentaje de ahorro aproximado en gastos de combustible que ofrece el sistema de conversión a Gas LP de ECOGAS LP en comparación con la gasolina?",
@@ -1417,6 +1704,38 @@
       }
     ];
 
+    let EXAM_QUESTIONS = [...DEFAULT_EXAM_QUESTIONS];
+
+    function loadCustomQuestions() {
+      try {
+        const cached = localStorage.getItem('ecogas_custom_questions');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            EXAM_QUESTIONS = parsed;
+          }
+        }
+      } catch(e) {}
+    }
+
+    async function syncQuestionsFromFirestore() {
+      if (window.db && window.firestoreDoc && window.firestoreGetDoc) {
+        try {
+          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
+          const snap = await window.firestoreGetDoc(docRef);
+          if (snap.exists()) {
+            const data = snap.data();
+            if (data && Array.isArray(data.list) && data.list.length > 0) {
+              EXAM_QUESTIONS = data.list;
+              localStorage.setItem('ecogas_custom_questions', JSON.stringify(data.list));
+            }
+          }
+        } catch(e) {
+          console.warn('Firestore questions sync fallback');
+        }
+      }
+    }
+
     // STATE
     let currentUser = null;
     let currentQuestionIndex = 0;
@@ -1436,16 +1755,20 @@
       score: 0,
       streak: 0
     };
-    let allConnectedTeams = {}; // Map of teamId -> team object
+    let allConnectedTeams = {};
     let kahootRoomUnsubscribe = null;
     let kahootTeamsUnsubscribe = null;
     let kahootHostTimerInterval = null;
     let kahootQStartTime = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadCustomQuestions();
       loadCachedSession();
       loadCachedSubmissions();
       checkCachedKahootTeam();
+      window.addEventListener('firebase-ready', () => {
+        syncQuestionsFromFirestore();
+      });
     });
 
     function checkCachedKahootTeam() {
@@ -1489,8 +1812,11 @@
       const headerInfo = document.getElementById('headerUserInfo');
       if (!currentUser) {
         headerInfo.innerHTML = `
-          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 7px 10px; font-size: 13px;" title="Activar/Silenciar Música">
+          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;" title="Activar/Silenciar Música">
             🔊
+          </button>
+          <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;" title="Configurar Preguntas">
+            ⚙️
           </button>
           <button onclick="switchMode('kahoot-join')" class="btn-kahoot" style="padding: 7px 12px; font-size: 12px;">
             🎮 Batalla de Equipos
@@ -1501,14 +1827,16 @@
       
       if (currentUser.role === 'ADMIN') {
         headerInfo.innerHTML = `
-          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 7px 10px; font-size: 13px;">🔊</button>
+          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;">🔊</button>
+          <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;" title="Configurar Preguntas">⚙️</button>
           <span style="font-size: 11px; font-weight: 800; background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.4);">👑 ADMIN</span>
           <button onclick="switchMode('kahoot-host')" class="btn-kahoot" style="padding: 6px 10px; font-size: 11px;">📺 Proyector Kahoot</button>
           <button onclick="handleLogout()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px;">Salir</button>
         `;
       } else {
         headerInfo.innerHTML = `
-          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 7px 10px; font-size: 13px;">🔊</button>
+          <button id="btnAudioToggle" onclick="toggleAudio()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;">🔊</button>
+          <button onclick="openQuestionsEditorModal()" class="btn-secondary" style="padding: 6px 9px; font-size: 13px;" title="Configurar Preguntas">⚙️</button>
           <div style="font-size: 12px; font-weight: 700; color: #ffffff;">${currentUser.name}</div>
           <button onclick="handleLogout()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px;">Salir</button>
         `;
@@ -1559,7 +1887,6 @@
         showView('viewLogin');
       } else if (mode === 'kahoot-join') {
         if (kahootTeamData && kahootTeamData.id && kahootTeamData.name) {
-          // Re-attach to existing room lobby
           renderPlayerLobbyUI();
           attachTeamListeners(currentKahootPin, kahootTeamData.id);
           showView('viewKahootPlayerLobby');
@@ -1646,20 +1973,26 @@
       const letters = ['A', 'B', 'C', 'D'];
       const selectedOpt = userAnswers[q.id];
 
+      const hasImg = (q.image && q.image !== 'NONE' && q.image !== '');
+
       const container = document.getElementById('questionContainer');
       container.innerHTML = `
-        <div style="font-size: 11px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+        <div style="font-size: 11px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
           PREGUNTA #${currentQuestionIndex + 1} &bull; CONVERSIÓN ECOGAS LP
         </div>
-        <h3 style="font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 16px; line-height: 1.4;">
+        <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 12px; line-height: 1.35;">
           ${q.question}
         </h3>
 
-        ${q.image ? `
-          <div style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; max-height: 200px; display: flex; justify-content: center; background: #040e07; border: 1px solid rgba(74,222,128,0.2);">
-            <img src="${q.image}" alt="Referencia" style="max-height: 200px; max-width: 100%; object-fit: contain;" />
+        ${hasImg ? `
+          <div style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; max-height: 170px; display: flex; justify-content: center; background: #040e07; border: 1px solid rgba(74,222,128,0.2);">
+            <img src="${q.image}" alt="Referencia" style="max-height: 170px; max-width: 100%; object-fit: contain;" />
           </div>
-        ` : ''}
+        ` : `
+          <div style="margin-bottom: 12px; border-radius: 12px; overflow: hidden; max-height: 120px; display: flex; justify-content: center; align-items: center; background: #040e07; border: 1px solid rgba(74,222,128,0.15);" class="animate-mascot">
+            ${getThinkingMascotSVG(currentQuestionIndex)}
+          </div>
+        `}
 
         <div style="display: flex; flex-direction: column;">
           ${q.options.map((opt, idx) => {
@@ -1670,7 +2003,7 @@
                 onclick="selectExamOption(${q.id}, ${idx})"
               >
                 <div class="option-letter">${letters[idx]}</div>
-                <div style="font-size: 14px; font-weight: 600; color: ${isSel ? '#ffffff' : '#e2e8f0'}; line-height: 1.4; padding-top: 4px;">
+                <div style="font-size: 13px; font-weight: 600; color: ${isSel ? '#ffffff' : '#e2e8f0'}; line-height: 1.35; padding-top: 3px;">
                   ${opt}
                 </div>
               </div>
@@ -1702,7 +2035,7 @@
         if (currentQuestionIndex < EXAM_QUESTIONS.length - 1) {
           navigateQuestion(1);
         }
-      }, 320);
+      }, 300);
     }
 
     function navigateQuestion(delta) {
@@ -1816,16 +2149,16 @@
       if (res.isApproved) {
         soundEngine.playCorrect();
         badgeContainer.innerHTML = `
-          <div style="font-size: 52px; margin-bottom: 4px;">🏆</div>
-          <div style="font-size: 20px; font-weight: 900; color: #4ade80;">¡EVALUACIÓN APROBADA!</div>
+          <div style="font-size: 48px; margin-bottom: 2px;">🏆</div>
+          <div style="font-size: 19px; font-weight: 900; color: #4ade80;">¡EVALUACIÓN APROBADA!</div>
         `;
         feedbackMsg.innerHTML = `¡Felicidades, <b>${res.name}</b>! Has acreditado satisfactoriamente la <b>Capacitación de ECOGAS LP</b>. Ya puedes descargar tu diploma oficial de certificación de conocimientos.`;
         btnDiploma.classList.remove('hidden');
       } else {
         soundEngine.playWrong();
         badgeContainer.innerHTML = `
-          <div style="font-size: 52px; margin-bottom: 4px;">⚠️</div>
-          <div style="font-size: 20px; font-weight: 900; color: #fbbf24;">NO APROBADO (MÍNIMO 80 PTS)</div>
+          <div style="font-size: 48px; margin-bottom: 2px;">⚠️</div>
+          <div style="font-size: 19px; font-weight: 900; color: #fbbf24;">NO APROBADO (MÍNIMO 80 PTS)</div>
         `;
         feedbackMsg.innerHTML = `Has obtenido <b>${res.score} puntos</b>. Se requiere un mínimo de 80 puntos para obtener la certificación. Revisa las respuestas correctas para repasar los conceptos.`;
         btnDiploma.classList.add('hidden');
@@ -1834,21 +2167,21 @@
       const reviewList = document.getElementById('reviewAnswersList');
       reviewList.innerHTML = res.breakdown.map((item, idx) => {
         return `
-          <div class="glass-card" style="padding: 14px; border-color: ${item.isCorrect ? 'rgba(74, 222, 128, 0.4)' : 'rgba(251, 113, 133, 0.4)'}; font-size: 13px;">
-            <div style="font-size: 11px; font-weight: 800; color: ${item.isCorrect ? '#4ade80' : '#fb7185'}; text-transform: uppercase; margin-bottom: 4px;">
+          <div class="glass-card" style="padding: 12px; border-color: ${item.isCorrect ? 'rgba(74, 222, 128, 0.4)' : 'rgba(251, 113, 133, 0.4)'}; font-size: 12px;">
+            <div style="font-size: 10px; font-weight: 800; color: ${item.isCorrect ? '#4ade80' : '#fb7185'}; text-transform: uppercase; margin-bottom: 4px;">
               ${item.isCorrect ? '✓ Correcto' : '✕ Incorrecto'} &bull; Pregunta ${idx + 1}
             </div>
-            <div style="font-weight: 700; color: #ffffff; margin-bottom: 8px;">${item.question}</div>
-            <div style="background: rgba(0,0,0,0.35); padding: 8px 10px; border-radius: 8px; margin-bottom: 4px;">
+            <div style="font-weight: 700; color: #ffffff; margin-bottom: 6px;">${item.question}</div>
+            <div style="background: rgba(0,0,0,0.35); padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
               <span style="color: #94a3b8;">Tu respuesta: </span>
               <span style="font-weight: 700; color: ${item.isCorrect ? '#86efac' : '#fca5a5'};">${item.selectedText}</span>
             </div>
             ${!item.isCorrect ? `
-              <div style="background: rgba(74, 222, 128, 0.15); padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; color: #bbf7d0;">
+              <div style="background: rgba(74, 222, 128, 0.15); padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; color: #bbf7d0;">
                 <b>Respuesta esperada: </b>${item.correctText}
               </div>
             ` : ''}
-            <div style="font-size: 11px; color: #86efac; font-style: italic; margin-top: 6px;">
+            <div style="font-size: 11px; color: #86efac; font-style: italic; margin-top: 4px;">
               💡 <b>Justificación técnica:</b> ${item.explanation}
             </div>
           </div>
@@ -1868,6 +2201,166 @@
       } else {
         sec.classList.add('hidden');
         btn.innerText = 'Ver Revisión Detallada de Preguntas';
+      }
+    }
+
+    // ==========================================
+    // ⚙️ QUESTION & TRIVIA EDITOR LOGIC
+    // ==========================================
+    let currentEditingQuestionIndex = 0;
+
+    function openQuestionsEditorModal() {
+      populateEditorQuestionSelector();
+      loadQuestionIntoEditor(0);
+      document.getElementById('modalQuestionsEditor').classList.remove('hidden');
+    }
+
+    function closeQuestionsEditorModal() {
+      document.getElementById('modalQuestionsEditor').classList.add('hidden');
+    }
+
+    function populateEditorQuestionSelector() {
+      const sel = document.getElementById('editorQuestionSelector');
+      sel.innerHTML = EXAM_QUESTIONS.map((q, idx) => {
+        const shortQ = q.question.length > 35 ? q.question.substring(0, 35) + '...' : q.question;
+        return `<option value="${idx}">Pregunta ${idx + 1}: ${shortQ}</option>`;
+      }).join('');
+      sel.value = currentEditingQuestionIndex;
+    }
+
+    function loadQuestionIntoEditor(idx) {
+      currentEditingQuestionIndex = parseInt(idx);
+      const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
+      if (!q) return;
+
+      document.getElementById('editQuestionText').value = q.question || '';
+      
+      const imgSel = document.getElementById('editQuestionImageSelect');
+      const customInp = document.getElementById('editQuestionCustomImageUrl');
+      
+      if (!q.image || q.image === 'NONE') {
+        imgSel.value = 'NONE';
+        customInp.classList.add('hidden');
+        customInp.value = '';
+      } else if (['img_4cil.jpg', 'img_6cil.jpg', 'img_8cil.jpg', 'img_toroidal.jpg', 'img_cilindrico.jpg', 'img_vaporizador.jpg', 'img_inyectores.jpg', 'img_flotilla.jpg'].includes(q.image)) {
+        imgSel.value = q.image;
+        customInp.classList.add('hidden');
+        customInp.value = '';
+      } else {
+        imgSel.value = 'CUSTOM';
+        customInp.classList.remove('hidden');
+        customInp.value = q.image;
+      }
+
+      document.getElementById('editOpt0').value = (q.options && q.options[0]) || '';
+      document.getElementById('editOpt1').value = (q.options && q.options[1]) || '';
+      document.getElementById('editOpt2').value = (q.options && q.options[2]) || '';
+      document.getElementById('editOpt3').value = (q.options && q.options[3]) || '';
+
+      const rad = document.getElementById(`optRadio${q.correctIndex || 0}`);
+      if (rad) rad.checked = true;
+
+      document.getElementById('editQuestionExplanation').value = q.explanation || '';
+    }
+
+    function handleEditorImageChange() {
+      const val = document.getElementById('editQuestionImageSelect').value;
+      const customInp = document.getElementById('editQuestionCustomImageUrl');
+      if (val === 'CUSTOM') {
+        customInp.classList.remove('hidden');
+      } else {
+        customInp.classList.add('hidden');
+      }
+    }
+
+    function saveCurrentQuestionEdits() {
+      const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
+      if (!q) return;
+
+      const qText = document.getElementById('editQuestionText').value.trim();
+      if (!qText) {
+        alert('Por favor escribe el texto de la pregunta.');
+        return;
+      }
+
+      const imgChoice = document.getElementById('editQuestionImageSelect').value;
+      let finalImg = imgChoice;
+      if (imgChoice === 'CUSTOM') {
+        finalImg = document.getElementById('editQuestionCustomImageUrl').value.trim() || 'NONE';
+      }
+
+      const opt0 = document.getElementById('editOpt0').value.trim() || 'Opción A';
+      const opt1 = document.getElementById('editOpt1').value.trim() || 'Opción B';
+      const opt2 = document.getElementById('editOpt2').value.trim() || 'Opción C';
+      const opt3 = document.getElementById('editOpt3').value.trim() || 'Opción D';
+
+      const selectedRadio = document.querySelector('input[name="correctOptionRadio"]:checked');
+      const correctIdx = selectedRadio ? parseInt(selectedRadio.value) : 0;
+      const explanation = document.getElementById('editQuestionExplanation').value.trim();
+
+      q.question = qText;
+      q.image = (finalImg === 'NONE' ? '' : finalImg);
+      q.options = [opt0, opt1, opt2, opt3];
+      q.correctIndex = correctIdx;
+      q.explanation = explanation;
+
+      persistQuestions();
+      populateEditorQuestionSelector();
+      alert('✓ Pregunta guardada correctamente.');
+    }
+
+    function addNewQuestionToEditor() {
+      const newId = EXAM_QUESTIONS.length + 1;
+      const newQ = {
+        id: newId,
+        question: 'Nueva Pregunta de Capacitación ECOGAS LP',
+        image: 'NONE',
+        options: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+        correctIndex: 0,
+        explanation: 'Explicación técnica de la pregunta'
+      };
+
+      EXAM_QUESTIONS.push(newQ);
+      persistQuestions();
+      currentEditingQuestionIndex = EXAM_QUESTIONS.length - 1;
+      populateEditorQuestionSelector();
+      loadQuestionIntoEditor(currentEditingQuestionIndex);
+    }
+
+    function deleteCurrentEditorQuestion() {
+      if (EXAM_QUESTIONS.length <= 1) {
+        alert('Debe existir al menos una pregunta en el examen.');
+        return;
+      }
+
+      if (!confirm(`¿Eliminar la pregunta #${currentEditingQuestionIndex + 1}?`)) return;
+
+      EXAM_QUESTIONS.splice(currentEditingQuestionIndex, 1);
+      persistQuestions();
+      currentEditingQuestionIndex = Math.max(0, currentEditingQuestionIndex - 1);
+      populateEditorQuestionSelector();
+      loadQuestionIntoEditor(currentEditingQuestionIndex);
+    }
+
+    function restoreDefaultQuestions() {
+      if (!confirm('¿Restaurar todas las 15 preguntas oficiales del manual de ECOGAS LP?')) return;
+      EXAM_QUESTIONS = JSON.parse(JSON.stringify(DEFAULT_EXAM_QUESTIONS));
+      persistQuestions();
+      currentEditingQuestionIndex = 0;
+      populateEditorQuestionSelector();
+      loadQuestionIntoEditor(0);
+      alert('✓ Preguntas restauradas de fábrica.');
+    }
+
+    async function persistQuestions() {
+      localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+      if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
+        try {
+          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
+          await window.firestoreSetDoc(docRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
+        } catch(e) {
+          console.warn('Firestore questions save fallback');
+        }
       }
     }
 
@@ -1900,8 +2393,8 @@
       const canvas = document.getElementById('diplomaCanvas');
       const ctx = canvas.getContext('2d');
       
-      const W = canvas.width; // 1600
-      const H = canvas.height; // 1130
+      const W = canvas.width;
+      const H = canvas.height;
 
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, W, H);
@@ -2267,26 +2760,26 @@
 
         return `
           <tr style="border-bottom: 1px solid rgba(74,222,128,0.1);">
-            <td style="padding: 12px 16px;">
+            <td style="padding: 10px 14px;">
               <div style="font-weight: 700; color: #ffffff;">${item.name}</div>
               <div style="font-size: 10px; color: #86efac;">${item.certificateId || 'ECO-2026'} &bull; ${item.timeFormatted || '--'}</div>
             </td>
-            <td style="padding: 12px 10px; color: #cbd5e1; white-space: nowrap;">
+            <td style="padding: 10px; color: #cbd5e1; white-space: nowrap;">
               <div>${dateStr}</div>
               <div style="font-size: 9px; color: #94a3b8;">${timeStr}</div>
             </td>
-            <td style="padding: 12px 10px; text-align: center; white-space: nowrap;">
+            <td style="padding: 10px; text-align: center; white-space: nowrap;">
               <span style="font-weight: 800; color: ${item.isApproved ? '#4ade80' : '#fb7185'};">
                 ${item.score} pts
               </span>
               <div style="font-size: 9px; color: #86efac;">${item.correctCount || 0}/${item.totalQuestions || 15}</div>
             </td>
-            <td style="padding: 12px 10px; text-align: center; white-space: nowrap;">
+            <td style="padding: 10px; text-align: center; white-space: nowrap;">
               <span style="font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: ${item.isApproved ? 'rgba(74, 222, 128, 0.2)' : 'rgba(251, 113, 133, 0.2)'}; color: ${item.isApproved ? '#86efac' : '#fca5a5'}; border: 1px solid ${item.isApproved ? 'rgba(74, 222, 128, 0.4)' : 'rgba(251, 113, 133, 0.4)'};">
                 ${item.isApproved ? '✓ Aprobado' : '✕ No Aprobado'}
               </span>
             </td>
-            <td style="padding: 12px 16px; text-align: center; white-space: nowrap;">
+            <td style="padding: 10px 14px; text-align: center; white-space: nowrap;">
               <div style="display: flex; justify-content: center; gap: 6px;">
                 <button onclick="viewParticipantDetails('${item.certificateId}')" class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" title="Ver Respuestas">
                   👁️
@@ -2379,7 +2872,6 @@
 
     // ====================================================
     // 🎮 REAL-TIME MULTIPLAYER TEAM KAHOOT ENGINE
-    // (Subcollections Architecture: Zero Overwrites)
     // ====================================================
 
     function addTeamMemberInput() {
@@ -2444,19 +2936,14 @@
       };
 
       localStorage.setItem('ecogas_kahoot_team', JSON.stringify(kahootTeamData));
-
-      // Start audio
       soundEngine.playLobbyMusic();
 
       renderPlayerLobbyUI();
       showView('viewKahootPlayerLobby');
 
-      // Sync team document to Firestore Subcollection
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
           const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
-          
-          // Ensure room exists without wiping other data
           const roomSnap = await window.firestoreGetDoc(roomRef);
           if (!roomSnap.exists()) {
             await window.firestoreSetDoc(roomRef, {
@@ -2467,7 +2954,6 @@
             });
           }
 
-          // Register in Subcollection (INDEPENDENT DOCUMENT)
           const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin, 'teams', teamId);
           await window.firestoreSetDoc(teamDocRef, kahootTeamData);
 
@@ -2482,7 +2968,6 @@
     function attachTeamListeners(pin, teamId) {
       if (!window.db) return;
 
-      // 1. Listen to room state updates
       const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
       if (kahootRoomUnsubscribe) kahootRoomUnsubscribe();
       kahootRoomUnsubscribe = window.firestoreOnSnapshot(roomRef, (docSnap) => {
@@ -2491,7 +2976,6 @@
         }
       });
 
-      // 2. Listen to all teams in room to update total connected counter
       const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', pin, 'teams');
       if (kahootTeamsUnsubscribe) kahootTeamsUnsubscribe();
       kahootTeamsUnsubscribe = window.firestoreOnSnapshot(teamsColRef, (colSnap) => {
@@ -2524,9 +3008,7 @@
         try {
           const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams', kahootTeamData.id);
           await window.firestoreSetDoc(teamDocRef, { isReady: kahootTeamData.isReady }, { merge: true });
-        } catch (e) {
-          console.warn('Ready sync fallback:', e);
-        }
+        } catch (e) {}
       }
     }
 
@@ -2560,7 +3042,6 @@
       } else if (room.status === 'QUESTION') {
         const qIdx = room.currentQ || 0;
         
-        // If it's a new question
         if (lastHandledQ !== qIdx || lastHandledRoomStatus !== 'QUESTION') {
           lastHandledQ = qIdx;
           lastHandledRoomStatus = 'QUESTION';
@@ -2640,7 +3121,6 @@
       document.getElementById('kahootPlayerButtonsContainer').classList.add('hidden');
       document.getElementById('kahootPlayerFeedback').classList.remove('hidden');
 
-      // Sync answer to Firestore Subcollection
       if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin && kahootTeamData.id) {
         try {
           const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams', kahootTeamData.id);
@@ -2651,9 +3131,7 @@
             lastAnswerQIndex: qIdx,
             lastAnswerTime: Date.now()
           }, { merge: true });
-        } catch(e) {
-          console.warn('Answer sync fallback:', e);
-        }
+        } catch(e) {}
       }
     }
 
@@ -2683,11 +3161,8 @@
       document.getElementById('kahootHostPodium').classList.add('hidden');
 
       showView('viewKahootHost');
-
-      // Start lobby music
       soundEngine.playLobbyMusic();
 
-      // Initialize room in Firestore preserving teams
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
           const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', pin);
@@ -2701,7 +3176,6 @@
               updatedAt: Date.now()
             });
           } else {
-            // Keep existing room but ensure it's on LOBBY if not started
             const currentData = snap.data();
             currentHostRoomData = currentData;
             if (currentData.status === 'PODIUM') {
@@ -2709,7 +3183,6 @@
             }
           }
 
-          // 1. Listen to Room status
           if (kahootRoomUnsubscribe) kahootRoomUnsubscribe();
           kahootRoomUnsubscribe = window.firestoreOnSnapshot(roomRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -2717,7 +3190,6 @@
             }
           });
 
-          // 2. Listen to TEAMS Subcollection (Real-Time Real Live Sync)
           const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', pin, 'teams');
           if (kahootTeamsUnsubscribe) kahootTeamsUnsubscribe();
           kahootTeamsUnsubscribe = window.firestoreOnSnapshot(teamsColRef, (colSnap) => {
@@ -2750,14 +3222,14 @@
         container.innerHTML = list.map(p => {
           const membersText = p.members && p.members.length > 0 ? p.members.join(', ') : '1 participante';
           return `
-            <div class="glass-card animate-enter" style="padding: 12px; border-color: ${p.isReady ? '#4ade80' : 'rgba(255,255,255,0.1)'}; background: ${p.isReady ? 'rgba(46,164,40,0.22)' : 'rgba(18,54,33,0.65)'};">
+            <div class="glass-card animate-enter" style="padding: 10px 12px; border-color: ${p.isReady ? '#4ade80' : 'rgba(255,255,255,0.1)'}; background: ${p.isReady ? 'rgba(46,164,40,0.22)' : 'rgba(18,54,33,0.65)'};">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px;">
-                <div style="font-weight: 800; font-size: 14px; color: #ffffff;">🚗 ${p.name}</div>
-                <span style="font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: ${p.isReady ? '#2ea428' : '#334155'}; color: #ffffff;">
+                <div style="font-weight: 800; font-size: 13px; color: #ffffff;">🚗 ${p.name}</div>
+                <span style="font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 10px; background: ${p.isReady ? '#2ea428' : '#334155'}; color: #ffffff;">
                   ${p.isReady ? '✓ LISTO' : '⏳ Esperando'}
                 </span>
               </div>
-              <div style="font-size: 11px; color: #a5b4fc; margin-top: 5px; line-height: 1.3;">
+              <div style="font-size: 10px; color: #a5b4fc; margin-top: 4px; line-height: 1.3;">
                 👥 <b>Integrantes:</b> ${membersText}
               </div>
             </div>
@@ -2852,13 +3324,21 @@
       document.getElementById('kahootHostQIndex').innerText = `Pregunta ${idx + 1} de ${EXAM_QUESTIONS.length}`;
       document.getElementById('kahootHostQText').innerText = q.question;
 
-      // Image
+      // Image or Thinking Mascot
       const imgEl = document.getElementById('kahootHostImg');
-      if (q.image) {
+      const mascotEl = document.getElementById('kahootHostMascotContainer');
+
+      if (q.image && q.image !== 'NONE' && q.image !== '') {
         imgEl.src = q.image;
+        imgEl.classList.remove('hidden');
+        mascotEl.classList.add('hidden');
         document.getElementById('kahootHostImgContainer').classList.remove('hidden');
       } else {
-        document.getElementById('kahootHostImgContainer').classList.add('hidden');
+        // Render fun thinking mascot!
+        imgEl.classList.add('hidden');
+        mascotEl.innerHTML = getThinkingMascotSVG(idx);
+        mascotEl.classList.remove('hidden');
+        document.getElementById('kahootHostImgContainer').classList.remove('hidden');
       }
 
       // Options
@@ -2917,13 +3397,12 @@
       const q = EXAM_QUESTIONS[currentHostRoomData.currentQ];
       soundEngine.playCorrect();
 
-      // Highlight correct option card
       for (let i = 0; i < 4; i++) {
         const card = document.getElementById(`kHostCard${i}`);
         if (i === q.correctIndex) {
           card.style.opacity = '1';
-          card.style.transform = 'scale(1.04)';
-          card.style.boxShadow = '0 0 30px rgba(255,255,255,0.9)';
+          card.style.transform = 'scale(1.03)';
+          card.style.boxShadow = '0 0 25px rgba(255,255,255,0.9)';
         } else {
           card.style.opacity = '0.3';
           card.style.transform = 'scale(0.96)';
@@ -2954,15 +3433,15 @@
         container.innerHTML = '<p style="color:#94a3b8;">No hay puntuaciones registradas.</p>';
       } else {
         container.innerHTML = players.slice(0, 6).map((p, i) => `
-          <div class="glass-card animate-enter" style="padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-color: ${i === 0 ? '#facc15' : 'rgba(74,222,128,0.2)'};">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-size: 16px; font-weight: 900; color: ${i === 0 ? '#facc15' : i === 1 ? '#cbd5e1' : i === 2 ? '#d97706' : '#94a3b8'};">#${i + 1}</span>
+          <div class="glass-card animate-enter" style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-color: ${i === 0 ? '#facc15' : 'rgba(74,222,128,0.2)'};">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 15px; font-weight: 900; color: ${i === 0 ? '#facc15' : i === 1 ? '#cbd5e1' : i === 2 ? '#d97706' : '#94a3b8'};">#${i + 1}</span>
               <div>
-                <div style="font-size: 15px; font-weight: 800; color: #ffffff;">🚗 ${p.name}</div>
+                <div style="font-size: 14px; font-weight: 800; color: #ffffff;">🚗 ${p.name}</div>
                 <div style="font-size: 10px; color: #a5b4fc;">${p.members && p.members.length > 0 ? p.members.join(', ') : ''}</div>
               </div>
             </div>
-            <span style="font-size: 16px; font-weight: 900; color: #4ade80;">${p.score || 0} pts</span>
+            <span style="font-size: 15px; font-weight: 900; color: #4ade80;">${p.score || 0} pts</span>
           </div>
         `).join('');
       }
@@ -3000,30 +3479,29 @@
       document.getElementById('kahootPodiumContainer').innerHTML = `
         <!-- 2nd Place -->
         <div style="flex: 1; max-width: 170px; text-align: center;" class="animate-enter">
-          <div style="font-size: 30px;">🥈</div>
-          <div style="font-size: 14px; font-weight: 800; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p2.name}</div>
-          <div style="font-size: 12px; font-weight: 800; color: #cbd5e1;">${p2.score} pts</div>
-          <div style="height: 100px; background: linear-gradient(180deg, #94a3b8, #475569); border-radius: 12px 12px 0 0; margin-top: 8px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; color: #0f172a;">2</div>
+          <div style="font-size: 28px;">🥈</div>
+          <div style="font-size: 13px; font-weight: 800; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p2.name}</div>
+          <div style="font-size: 11px; font-weight: 800; color: #cbd5e1;">${p2.score} pts</div>
+          <div style="height: 90px; background: linear-gradient(180deg, #94a3b8, #475569); border-radius: 12px 12px 0 0; margin-top: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #0f172a;">2</div>
         </div>
 
         <!-- 1st Place -->
-        <div style="flex: 1; max-width: 200px; text-align: center;" class="animate-enter">
-          <div style="font-size: 44px;">🥇</div>
-          <div style="font-size: 17px; font-weight: 900; color: #facc15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p1.name}</div>
-          <div style="font-size: 14px; font-weight: 800; color: #fde68a;">${p1.score} pts</div>
-          <div style="height: 150px; background: linear-gradient(180deg, #f59e0b, #b45309); border-radius: 14px 14px 0 0; margin-top: 8px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; color: #0f172a; box-shadow: 0 0 30px rgba(245,158,11,0.6);">1</div>
+        <div style="flex: 1; max-width: 190px; text-align: center;" class="animate-enter">
+          <div style="font-size: 40px;">🥇</div>
+          <div style="font-size: 15px; font-weight: 900; color: #facc15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p1.name}</div>
+          <div style="font-size: 13px; font-weight: 800; color: #fde68a;">${p1.score} pts</div>
+          <div style="height: 140px; background: linear-gradient(180deg, #f59e0b, #b45309); border-radius: 14px 14px 0 0; margin-top: 6px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #0f172a; box-shadow: 0 0 25px rgba(245,158,11,0.6);">1</div>
         </div>
 
         <!-- 3rd Place -->
         <div style="flex: 1; max-width: 170px; text-align: center;" class="animate-enter">
-          <div style="font-size: 28px;">🥉</div>
-          <div style="font-size: 14px; font-weight: 800; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p3.name}</div>
-          <div style="font-size: 12px; font-weight: 800; color: #d97706;">${p3.score} pts</div>
-          <div style="height: 70px; background: linear-gradient(180deg, #d97706, #78350f); border-radius: 12px 12px 0 0; margin-top: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #ffffff;">3</div>
+          <div style="font-size: 26px;">🥉</div>
+          <div style="font-size: 13px; font-weight: 800; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p3.name}</div>
+          <div style="font-size: 11px; font-weight: 800; color: #d97706;">${p3.score} pts</div>
+          <div style="height: 60px; background: linear-gradient(180deg, #d97706, #78350f); border-radius: 12px 12px 0 0; margin-top: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #ffffff;">3</div>
         </div>
       `;
 
-      // Buttons to generate official team recognitions
       const btnArea = document.getElementById('podiumRecognitionButtons');
       btnArea.innerHTML = `
         ${p1.name !== '1.er Lugar' ? `
