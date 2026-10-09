@@ -683,65 +683,110 @@
 
         </div>
         <p style="font-size: 11px; color: #94a3b8;">Monitoreo en tiempo real, descarga de diplomas, historial y editor de reactivos.</p>
-      </div>
 
-      <!-- KPI Metrics -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
-        <div class="glass-panel" style="padding: 12px; text-align: center;">
-          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Total Evaluaciones</div>
-          <div id="adminStatTotal" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">0</div>
-        </div>
-        <div class="glass-panel" style="padding: 12px; text-align: center;">
-          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Aprobados</div>
-          <div id="adminStatApproved" style="font-size: 22px; font-weight: 900; color: #4ade80; margin-top: 2px;">0</div>
-        </div>
-        <div class="glass-panel" style="padding: 12px; text-align: center;">
-          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Reprobados</div>
-          <div id="adminStatFailed" style="font-size: 22px; font-weight: 900; color: #fb7185; margin-top: 2px;">0</div>
-        </div>
-        <div class="glass-panel" style="padding: 12px; text-align: center;">
-          <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Promedio</div>
-          <div id="adminStatAvgScore" style="font-size: 22px; font-weight: 900; color: #f59e0b; margin-top: 2px;">0 pts</div>
+        <!-- Sub-Navigation Tabs (Individual Evaluations vs Team Battles) -->
+        <div style="display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; margin-top: 4px;">
+          <button id="adminTabBtnIndividual" onclick="switchAdminTab('individual')" class="btn-primary" style="flex: 1; padding: 9px 12px; font-size: 12px; font-weight: 800; justify-content: center;">
+            📝 Evaluaciones Individuales (<span id="adminTabBadgeIndividual">0</span>)
+          </button>
+          <button id="adminTabBtnKahoot" onclick="switchAdminTab('kahoot')" class="btn-secondary" style="flex: 1; padding: 9px 12px; font-size: 12px; font-weight: 800; justify-content: center;">
+            ⚔️ Batallas de Equipos / Kahoot (<span id="adminTabBadgeKahoot">0</span>)
+          </button>
         </div>
       </div>
 
-      <!-- Search & Filters -->
-      <div class="glass-panel" style="padding: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
-        <input 
-          type="text" 
-          id="adminSearchInput" 
-          oninput="filterAdminSubmissions()" 
-          placeholder="🔍 Buscar participante..." 
-          class="input-field" 
-          style="flex: 1; min-width: 160px; padding: 7px 10px; font-size: 12px;"
-        />
-        <select id="adminStatusFilter" onchange="filterAdminSubmissions()" class="input-field" style="width: auto; padding: 7px 10px; font-size: 12px;">
-          <option value="ALL">Todos los Estados</option>
-          <option value="APPROVED">Solo Aprobados (>= 80 pts)</option>
-          <option value="FAILED">Solo No Aprobados (&lt; 80 pts)</option>
-        </select>
+      <!-- SECTION A: INDIVIDUAL EVALUATIONS -->
+      <div id="adminSectionIndividual" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- KPI Metrics -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Total Evaluaciones</div>
+            <div id="adminStatTotal" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">0</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Aprobados</div>
+            <div id="adminStatApproved" style="font-size: 22px; font-weight: 900; color: #4ade80; margin-top: 2px;">0</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Reprobados</div>
+            <div id="adminStatFailed" style="font-size: 22px; font-weight: 900; color: #fb7185; margin-top: 2px;">0</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Promedio</div>
+            <div id="adminStatAvgScore" style="font-size: 22px; font-weight: 900; color: #f59e0b; margin-top: 2px;">0 pts</div>
+          </div>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="glass-panel" style="padding: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <input 
+            type="text" 
+            id="adminSearchInput" 
+            oninput="filterAdminSubmissions()" 
+            placeholder="🔍 Buscar participante..." 
+            class="input-field" 
+            style="flex: 1; min-width: 160px; padding: 7px 10px; font-size: 12px;"
+          />
+          <select id="adminStatusFilter" onchange="filterAdminSubmissions()" class="input-field" style="width: auto; padding: 7px 10px; font-size: 12px;">
+            <option value="ALL">Todos los Estados</option>
+            <option value="APPROVED">Solo Aprobados (>= 80 pts)</option>
+            <option value="FAILED">Solo No Aprobados (&lt; 80 pts)</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="glass-panel" style="overflow: hidden;">
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;">
+              <thead>
+                <tr style="background: #040e07; border-bottom: 1px solid #165a2d; color: #86efac; text-transform: uppercase; font-size: 10px;">
+                  <th style="padding: 10px 14px;">Participante</th>
+                  <th style="padding: 10px;">Fecha</th>
+                  <th style="padding: 10px; text-align: center;">Calificación</th>
+                  <th style="padding: 10px; text-align: center;">Estado</th>
+                  <th style="padding: 10px 14px; text-align: center;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"></tbody>
+            </table>
+          </div>
+          <div id="adminTableEmpty" class="hidden" style="padding: 24px; text-align: center; color: #94a3b8;">
+            No hay evaluaciones registradas aún.
+          </div>
+        </div>
       </div>
 
-      <!-- Table -->
-      <div class="glass-panel" style="overflow: hidden;">
-        <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;">
-            <thead>
-              <tr style="background: #040e07; border-bottom: 1px solid #165a2d; color: #86efac; text-transform: uppercase; font-size: 10px;">
-                <th style="padding: 10px 14px;">Participante</th>
-                <th style="padding: 10px;">Fecha</th>
-                <th style="padding: 10px; text-align: center;">Calificación</th>
-                <th style="padding: 10px; text-align: center;">Estado</th>
-                <th style="padding: 10px 14px; text-align: center;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="adminTableBody"></tbody>
-          </table>
+      <!-- SECTION B: KAHOOT TEAM BATTLES -->
+      <div id="adminSectionKahoot" class="hidden" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Battle KPI Metrics -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Total Batallas</div>
+            <div id="adminStatKahootTotal" style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">0</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Equipos que Jugaron</div>
+            <div id="adminStatKahootTeams" style="font-size: 22px; font-weight: 900; color: #4ade80; margin-top: 2px;">0</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Mejor Puntaje</div>
+            <div id="adminStatKahootTopScore" style="font-size: 22px; font-weight: 900; color: #f59e0b; margin-top: 2px;">0 pts</div>
+          </div>
+          <div class="glass-panel" style="padding: 12px; text-align: center;">
+            <div style="font-size: 10px; color: #86efac; text-transform: uppercase;">Último Ganador</div>
+            <div id="adminStatKahootLastWinner" style="font-size: 13px; font-weight: 900; color: #38bdf8; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
+          </div>
         </div>
-        <div id="adminTableEmpty" class="hidden" style="padding: 24px; text-align: center; color: #94a3b8;">
-          No hay evaluaciones registradas aún.
+
+        <!-- Battles List -->
+        <div id="adminKahootBattlesContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <div id="adminKahootEmpty" class="hidden glass-panel" style="padding: 30px; text-align: center; color: #94a3b8;">
+          <div style="font-size: 32px; margin-bottom: 6px;">🎮</div>
+          <div style="font-weight: 800; color: #fff; font-size: 14px;">No hay registro de batallas por equipos aún.</div>
+          <p style="font-size: 11px; margin-top: 4px;">Cuando jueguen una partida en el proyector Kahoot y se muestre el podio, el resultado completo de los equipos se guardará aquí automáticamente.</p>
         </div>
       </div>
+
     </section>
 
     <!-- 5. VIEW: KAHOOT JOIN & REGISTER TEAM (FOR PHONES) -->
@@ -946,10 +991,15 @@
           </div>
         </div>
 
-        <!-- Start Button -->
-        <button onclick="promptStartKahootGameHost()" class="btn-primary" style="font-size: 15px; padding: 14px 30px; border-radius: 12px;">
-          🚀 ¡COMENZAR BATALLA! (Iniciar Trivia)
-        </button>
+        <!-- Host Actions (Start & Reset) -->
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+          <button onclick="resetKahootHostRoom()" class="btn-secondary" style="font-size: 12px; padding: 12px 18px; border-radius: 12px; border-color: rgba(251,113,133,0.3); color: #fca5a5;" title="Limpia los equipos registrados para una nueva partida">
+            🧹 Reiniciar Sala / Limpiar Equipos
+          </button>
+          <button onclick="promptStartKahootGameHost()" class="btn-primary" style="font-size: 15px; padding: 14px 30px; border-radius: 12px;">
+            🚀 ¡COMENZAR BATALLA! (Iniciar Trivia)
+          </button>
+        </div>
 
       </div>
 
@@ -1255,6 +1305,23 @@
       <div id="modalDetailContent" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;"></div>
       <div style="text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
         <button onclick="closeParticipantDetailsModal()" class="btn-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETAILS OF TEAM BATTLE (KAHOOT) -->
+  <div id="modalBattleDetails" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;">
+    <div class="glass-panel" style="max-width: 680px; width: 100%; padding: 20px; max-height: 90vh; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+        <div>
+          <h3 id="modalBattleDetailTitle" style="font-size: 16px; font-weight: 800; color: #ffffff;">⚔️ Detalle de Batalla de Equipos</h3>
+          <p id="modalBattleDetailSubtitle" style="font-size: 11px; color: #86efac;"></p>
+        </div>
+        <button onclick="closeBattleDetailsModal()" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer;">✕</button>
+      </div>
+      <div id="modalBattleDetailContent" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;"></div>
+      <div style="text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+        <button onclick="closeBattleDetailsModal()" class="btn-secondary">Cerrar</button>
       </div>
     </div>
   </div>
@@ -2723,7 +2790,35 @@
     // ==========================================
     // 👑 ADMIN DASHBOARD & FIRESTORE DATABASE
     // ==========================================
+    let adminCurrentTab = 'individual';
+    let adminKahootBattles = [];
+
+    function switchAdminTab(tab) {
+      adminCurrentTab = tab;
+      const btnInd = document.getElementById('adminTabBtnIndividual');
+      const btnKah = document.getElementById('adminTabBtnKahoot');
+      const secInd = document.getElementById('adminSectionIndividual');
+      const secKah = document.getElementById('adminSectionKahoot');
+
+      if (tab === 'individual') {
+        btnInd.classList.remove('btn-secondary');
+        btnInd.classList.add('btn-primary');
+        btnKah.classList.remove('btn-primary');
+        btnKah.classList.add('btn-secondary');
+        secInd.classList.remove('hidden');
+        secKah.classList.add('hidden');
+      } else {
+        btnKah.classList.remove('btn-secondary');
+        btnKah.classList.add('btn-primary');
+        btnInd.classList.remove('btn-primary');
+        btnInd.classList.add('btn-secondary');
+        secKah.classList.remove('hidden');
+        secInd.classList.add('hidden');
+      }
+    }
+
     async function loadAdminData(forceRefresh = false) {
+      // 1. Load Individual Submissions
       if (window.db && window.firestoreCol && window.firestoreGetDocs) {
         try {
           const colRef = window.firestoreCol(window.db, 'ecogas_capacitacion_respuestas');
@@ -2737,12 +2832,35 @@
           console.warn('Firestore load fallback to localStorage', e);
           loadLocalSubmissions();
         }
+
+        // 2. Load Team Battles
+        try {
+          const kColRef = window.firestoreCol(window.db, 'ecogas_kahoot_historial');
+          const kSnap = await window.firestoreGetDocs(kColRef);
+          adminKahootBattles = [];
+          kSnap.forEach(doc => {
+            adminKahootBattles.push({ id: doc.id, ...doc.data() });
+          });
+          adminKahootBattles.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        } catch (e) {
+          console.warn('Firestore load kahoot history fallback', e);
+          loadLocalKahootBattles();
+        }
       } else {
         loadLocalSubmissions();
+        loadLocalKahootBattles();
       }
+
+      // Update Badges
+      const badgeInd = document.getElementById('adminTabBadgeIndividual');
+      if (badgeInd) badgeInd.innerText = adminSubmissions.length;
+      const badgeKah = document.getElementById('adminTabBadgeKahoot');
+      if (badgeKah) badgeKah.innerText = adminKahootBattles.length;
 
       calculateAdminKPIs();
       filterAdminSubmissions();
+      calculateAdminKahootKPIs();
+      renderAdminKahootBattles();
     }
 
     function loadLocalSubmissions() {
@@ -2750,6 +2868,13 @@
         const stored = localStorage.getItem('ecogas_admin_submissions');
         adminSubmissions = stored ? JSON.parse(stored) : [];
       } catch(e) { adminSubmissions = []; }
+    }
+
+    function loadLocalKahootBattles() {
+      try {
+        const stored = localStorage.getItem('ecogas_kahoot_history');
+        adminKahootBattles = stored ? JSON.parse(stored) : [];
+      } catch(e) { adminKahootBattles = []; }
     }
 
     async function saveSubmissionToDatabase(sub) {
@@ -2781,6 +2906,245 @@
       document.getElementById('adminStatApproved').innerText = approved;
       document.getElementById('adminStatFailed').innerText = failed;
       document.getElementById('adminStatAvgScore').innerText = `${avg} pts`;
+    }
+
+    function calculateAdminKahootKPIs() {
+      const totalBattles = adminKahootBattles.length;
+      let totalTeamsPlayed = 0;
+      let topScore = 0;
+      let lastWinner = '-';
+
+      adminKahootBattles.forEach((b, idx) => {
+        totalTeamsPlayed += (b.teams && b.teams.length) ? b.teams.length : (b.totalTeams || 0);
+        const wScore = b.winnerScore || b.podium?.first?.score || 0;
+        if (wScore > topScore) topScore = wScore;
+        if (idx === 0) {
+          lastWinner = b.winnerName || b.podium?.first?.name || '-';
+        }
+      });
+
+      const statTotal = document.getElementById('adminStatKahootTotal');
+      if (statTotal) statTotal.innerText = totalBattles;
+      const statTeams = document.getElementById('adminStatKahootTeams');
+      if (statTeams) statTeams.innerText = totalTeamsPlayed;
+      const statTop = document.getElementById('adminStatKahootTopScore');
+      if (statTop) statTop.innerText = `${topScore} pts`;
+      const statWinner = document.getElementById('adminStatKahootLastWinner');
+      if (statWinner) statWinner.innerText = lastWinner;
+    }
+
+    function renderAdminKahootBattles() {
+      const container = document.getElementById('adminKahootBattlesContainer');
+      const emptyMsg = document.getElementById('adminKahootEmpty');
+      if (!container || !emptyMsg) return;
+
+      if (adminKahootBattles.length === 0) {
+        container.innerHTML = '';
+        emptyMsg.classList.remove('hidden');
+        return;
+      }
+
+      emptyMsg.classList.add('hidden');
+      container.innerHTML = adminKahootBattles.map(battle => {
+        const battleId = battle.battleId || battle.id || '';
+        const dateStr = battle.date || (battle.timestamp ? new Date(battle.timestamp).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '--');
+        const winner = battle.podium?.first || battle.winner || (battle.teams && battle.teams[0]) || { name: 'Equipo Ganador', score: 0, members: [] };
+        const second = battle.podium?.second || (battle.teams && battle.teams[1]);
+        const third = battle.podium?.third || (battle.teams && battle.teams[2]);
+        const teamsList = battle.teams || [];
+
+        return `
+          <div class="glass-card animate-enter" style="padding: 16px; border-color: rgba(99,102,241,0.3); background: rgba(8, 28, 16, 0.75);">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 18px;">⚔️</span>
+                  <span style="font-weight: 900; font-size: 15px; color: #ffffff;">Batalla de Equipos ECOGAS</span>
+                  <span style="font-size: 10px; font-weight: 800; background: rgba(99,102,241,0.25); color: #a5b4fc; padding: 2px 7px; border-radius: 8px; border: 1px solid rgba(99,102,241,0.4);">
+                    PIN: ${battle.pin || '2026'}
+                  </span>
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 3px;">
+                  📅 ${dateStr} &bull; 👥 <b>${teamsList.length || battle.totalTeams || 0} equipos</b> participantes
+                </div>
+              </div>
+
+              <!-- Action Buttons for this Battle -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button onclick="downloadBattleWinnerDiploma('${battleId}')" class="btn-gold" style="padding: 5px 10px; font-size: 11px;" title="Descargar Diploma Oficial del Equipo Campeón">
+                  🎓 Diploma Campeón
+                </button>
+                <button onclick="openBattleDetailsModal('${battleId}')" class="btn-secondary" style="padding: 5px 10px; font-size: 11px;" title="Ver qué contestó cada equipo">
+                  📋 Ver Detalle / Respuestas
+                </button>
+                <button onclick="deleteBattleRecord('${battleId}')" class="btn-secondary" style="padding: 5px 8px; font-size: 11px; color: #fda4af;" title="Eliminar registro de esta partida">
+                  🗑️ Borrar
+                </button>
+              </div>
+            </div>
+
+            <!-- Podium Mini Badges -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 12px 0 10px;">
+              <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">👑</span>
+                <div style="overflow: hidden;">
+                  <div style="font-size: 9px; font-weight: 800; color: #f59e0b; text-transform: uppercase;">1er Lugar (Campeón)</div>
+                  <div style="font-size: 12px; font-weight: 900; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${winner.name}</div>
+                  <div style="font-size: 10px; color: #86efac; font-weight: 800;">${winner.score || 0} pts</div>
+                </div>
+              </div>
+
+              ${second ? `
+              <div style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">🥈</span>
+                <div style="overflow: hidden;">
+                  <div style="font-size: 9px; font-weight: 800; color: #cbd5e1; text-transform: uppercase;">2do Lugar</div>
+                  <div style="font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${second.name}</div>
+                  <div style="font-size: 10px; color: #86efac; font-weight: 800;">${second.score || 0} pts</div>
+                </div>
+              </div>` : ''}
+
+              ${third ? `
+              <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.25); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">🥉</span>
+                <div style="overflow: hidden;">
+                  <div style="font-size: 9px; font-weight: 800; color: #d97706; text-transform: uppercase;">3er Lugar</div>
+                  <div style="font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${third.name}</div>
+                  <div style="font-size: 10px; color: #86efac; font-weight: 800;">${third.score || 0} pts</div>
+                </div>
+              </div>` : ''}
+            </div>
+
+            <!-- Teams Mini Roster -->
+            <div style="background: #040e07; border-radius: 8px; padding: 8px 10px; font-size: 11px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-weight: 800; color: #a5b4fc; margin-bottom: 4px;">👥 Equipos Participantes:</div>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                ${teamsList.map((t, idx) => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                    <div>
+                      <b style="color: ${idx === 0 ? '#f59e0b' : '#ffffff'};">#${idx + 1} ${t.name}</b>
+                      <span style="color: #94a3b8; font-size: 10px; margin-left: 6px;">(${t.members && t.members.length > 0 ? t.members.join(', ') : 'Sin integrantes registrados'})</span>
+                    </div>
+                    <span style="font-weight: 900; color: #4ade80;">${t.score || 0} pts</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openBattleDetailsModal(battleId) {
+      const battle = adminKahootBattles.find(b => (b.battleId === battleId || b.id === battleId));
+      if (!battle) return;
+
+      document.getElementById('modalBattleDetailTitle').innerText = `⚔️ Batalla del ${battle.date || 'Registro'}`;
+      document.getElementById('modalBattleDetailSubtitle').innerText = `PIN: ${battle.pin || '2026'} - ${battle.teams ? battle.teams.length : (battle.totalTeams || 0)} equipos participantes`;
+
+      const content = document.getElementById('modalBattleDetailContent');
+      const teams = battle.teams || [];
+
+      if (teams.length === 0) {
+        content.innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 20px;">No hay información detallada de equipos para esta partida.</div>';
+      } else {
+        content.innerHTML = teams.map((team, tIdx) => {
+          const answers = team.answers || {};
+          return `
+            <div class="glass-card" style="padding: 12px; border-color: ${tIdx === 0 ? '#f59e0b' : 'rgba(255,255,255,0.1)'};">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 8px;">
+                <div>
+                  <div style="font-weight: 900; font-size: 14px; color: ${tIdx === 0 ? '#f59e0b' : '#ffffff'};">
+                    #${tIdx + 1} 🚗 ${team.name}
+                  </div>
+                  <div style="font-size: 11px; color: #a5b4fc; margin-top: 2px;">
+                    👥 <b>Integrantes:</b> ${team.members && team.members.length > 0 ? team.members.join(', ') : '1 participante'}
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-size: 16px; font-weight: 900; color: #4ade80;">${team.score || 0} pts</span>
+                </div>
+              </div>
+
+              <!-- Question Responses Breakdown -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; margin-top: 6px;">
+                ${EXAM_QUESTIONS.map((q, qIdx) => {
+                  const ans = answers[`q_${qIdx}`] || answers[qIdx] || answers[qIdx.toString()];
+                  const hasAnswer = (ans !== undefined);
+                  const isCorrect = (ans && ans.isCorrect) || (ans && ans.option === q.correctIndex);
+                  const optLetters = ['A', 'B', 'C', 'D'];
+                  const chosenLetter = (ans && ans.option !== undefined) ? optLetters[ans.option] : '-';
+                  const correctLetter = optLetters[q.correctIndex] || 'A';
+
+                  return `
+                    <div style="background: ${hasAnswer ? (isCorrect ? 'rgba(46,164,40,0.15)' : 'rgba(251,113,133,0.15)') : '#0f172a'}; border: 1px solid ${hasAnswer ? (isCorrect ? '#22c55e' : '#f43f5e') : 'rgba(255,255,255,0.05)'}; border-radius: 6px; padding: 4px 6px; font-size: 10px;">
+                      <div style="display: flex; justify-content: space-between; font-weight: 800;">
+                        <span style="color: #cbd5e1;">P${qIdx + 1}</span>
+                        <span style="color: ${isCorrect ? '#4ade80' : '#fb7185'};">${hasAnswer ? (isCorrect ? '✓ OK' : '✕ INC') : '⏳ No resp.'}</span>
+                      </div>
+                      <div style="font-size: 9px; color: #94a3b8; margin-top: 2px;">
+                        Resp: <b>${chosenLetter}</b> (Corr: <b>${correctLetter}</b>)
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('modalBattleDetails').classList.remove('hidden');
+    }
+
+    function closeBattleDetailsModal() {
+      document.getElementById('modalBattleDetails').classList.add('hidden');
+    }
+
+    function downloadBattleWinnerDiploma(battleId) {
+      const battle = adminKahootBattles.find(b => (b.battleId === battleId || b.id === battleId));
+      if (!battle) return;
+
+      const winner = battle.podium?.first || battle.winner || (battle.teams && battle.teams[0]) || { name: 'Equipo Campeón', score: 1000, members: [] };
+      document.getElementById('modalDiplomaTitle').innerText = '🏆 Reconocimiento Oficial de Equipo Ganador';
+      generateDiplomaCanvas({
+        teamName: winner.name,
+        members: winner.members || [],
+        score: winner.score || 0,
+        certificateId: 'TEAM-WIN-' + (battle.battleId || battle.id || Date.now().toString(36).toUpperCase()),
+        timestamp: battle.timestamp || new Date().toISOString()
+      }, 'TEAM');
+      openDiplomaModal();
+    }
+
+    async function deleteBattleRecord(battleId) {
+      const battle = adminKahootBattles.find(b => (b.battleId === battleId || b.id === battleId));
+      if (!battle) return;
+
+      if (!confirm(`¿Estás seguro de eliminar el registro de esta batalla del ${battle.date || 'historial'}?\nEsta acción no se puede deshacer.`)) {
+        return;
+      }
+
+      // Delete from Firestore
+      if (window.db && window.firestoreDoc && window.firestoreDeleteDoc && battle.id) {
+        try {
+          const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_historial', battle.id);
+          await window.firestoreDeleteDoc(docRef);
+        } catch(e) {
+          console.warn('Firestore battle delete error:', e);
+        }
+      }
+
+      // Delete from local array and storage
+      adminKahootBattles = adminKahootBattles.filter(b => (b.battleId !== battleId && b.id !== battleId));
+      localStorage.setItem('ecogas_kahoot_history', JSON.stringify(adminKahootBattles));
+
+      const badgeKah = document.getElementById('adminTabBadgeKahoot');
+      if (badgeKah) badgeKah.innerText = adminKahootBattles.length;
+
+      calculateAdminKahootKPIs();
+      renderAdminKahootBattles();
+      alert('✓ Registro de batalla eliminado con éxito.');
     }
 
     function filterAdminSubmissions() {
@@ -3070,11 +3434,9 @@
 
       currentKahootPin = pin;
       
-      let teamId = localStorage.getItem('ecogas_kahoot_team_id');
-      if (!teamId) {
-        teamId = 'team_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-        localStorage.setItem('ecogas_kahoot_team_id', teamId);
-      }
+      // Always generate a fresh unique team session ID
+      const teamId = 'team_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      localStorage.setItem('ecogas_kahoot_team_id', teamId);
 
       kahootTeamData = {
         id: teamId,
@@ -3082,6 +3444,8 @@
         members: members,
         isReady: false,
         score: 0,
+        answers: {},
+        lastAnsweredQ: -1,
         lastAnswerTime: 0,
         joinedAt: Date.now()
       };
@@ -3227,20 +3591,35 @@
       const q = EXAM_QUESTIONS[qIdx];
       const isCorrect = (q && q.correctIndex === optionIdx);
 
+      if (!kahootTeamData.answers) kahootTeamData.answers = {};
+      kahootTeamData.answers[`q_${qIdx}`] = {
+        option: optionIdx,
+        isCorrect: isCorrect,
+        time: Date.now()
+      };
+      kahootTeamData.lastAnsweredQ = qIdx;
+
+      if (isCorrect) {
+        kahootTeamData.score = (kahootTeamData.score || 0) + 100;
+      }
+      localStorage.setItem('ecogas_kahoot_team', JSON.stringify(kahootTeamData));
+
       if (window.db && window.firestoreDoc && window.firestoreSetDoc && currentKahootPin && kahootTeamData.id) {
         try {
           const teamDocRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin, 'teams', kahootTeamData.id);
           const updatePayload = {
+            score: kahootTeamData.score || 0,
+            lastAnsweredQ: qIdx,
+            [`answered_${qIdx}`]: true,
+            [`ans_${qIdx}`]: optionIdx,
+            answers: kahootTeamData.answers,
             [`answers.q_${qIdx}`]: {
               option: optionIdx,
               isCorrect: isCorrect,
               time: Date.now()
-            }
+            },
+            updatedAt: Date.now()
           };
-          if (isCorrect) {
-            kahootTeamData.score = (kahootTeamData.score || 0) + 100;
-            updatePayload.score = kahootTeamData.score;
-          }
           await window.firestoreSetDoc(teamDocRef, updatePayload, { merge: true });
         } catch (e) {
           console.warn('Answer submit fallback:', e);
@@ -3321,14 +3700,48 @@
       }
     }
 
+    async function resetKahootHostRoom() {
+      if (!confirm('¿Estás seguro de reiniciar la sala y limpiar los equipos registrados?\nEsto preparará la pantalla para una nueva ronda de trivia.')) return;
+      
+      allConnectedTeams = {};
+      renderHostLobbyTeams({});
+      const countEl = document.getElementById('kahootHostPlayersCount');
+      if (countEl) countEl.innerText = '0';
+      const readyEl = document.getElementById('kahootHostReadyCount');
+      if (readyEl) readyEl.innerText = '0';
+
+      if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
+        try {
+          const roomRef = window.firestoreDoc(window.db, 'ecogas_kahoot_rooms', currentKahootPin || '2026');
+          await window.firestoreSetDoc(roomRef, { status: 'LOBBY', currentQ: 0, updatedAt: Date.now() }, { merge: true });
+
+          // Clear teams subcollection
+          if (window.firestoreCol && window.firestoreGetDocs && window.firestoreDeleteDoc) {
+            const teamsColRef = window.firestoreCol(window.db, 'ecogas_kahoot_rooms', currentKahootPin || '2026', 'teams');
+            const snap = await window.firestoreGetDocs(teamsColRef);
+            for (const docItem of snap.docs) {
+              await window.firestoreDeleteDoc(docItem.ref);
+            }
+          }
+          alert('✓ Sala reiniciada. Los equipos pueden unirse ahora desde sus celulares.');
+        } catch(e) {
+          console.warn('Error resetting host room:', e);
+        }
+      }
+    }
+
     function renderHostLobbyTeams(teams) {
       const list = Object.values(teams);
       const readyList = list.filter(p => p.isReady);
 
-      document.getElementById('kahootHostPlayersCount').innerText = list.length;
-      document.getElementById('kahootHostReadyCount').innerText = readyList.length;
+      const countEl = document.getElementById('kahootHostPlayersCount');
+      if (countEl) countEl.innerText = list.length;
+      const readyEl = document.getElementById('kahootHostReadyCount');
+      if (readyEl) readyEl.innerText = readyList.length;
 
       const container = document.getElementById('kahootHostPlayersList');
+      if (!container) return;
+
       if (list.length === 0) {
         container.innerHTML = '<div style="color:#94a3b8; font-style:italic; grid-column: 1/-1; padding: 20px; text-align: center;">Esperando a que los equipos se registren desde sus celulares...</div>';
       } else {
@@ -3406,6 +3819,7 @@
     function showHostQuestion(idx) {
       currentHostRoomData.currentQ = idx;
       const q = EXAM_QUESTIONS[idx];
+      const totalTeams = Object.keys(allConnectedTeams).length;
 
       document.getElementById('kahootHostLobby').classList.add('hidden');
       document.getElementById('kahootHostLeaderboard').classList.add('hidden');
@@ -3444,8 +3858,8 @@
         document.getElementById(`kHostCard${i}`).style.boxShadow = 'none';
       }
 
-      // Reset answered count
-      document.getElementById('kahootHostAnsweredCount').innerHTML = 'Respondieron: <b>0</b>';
+      // Reset answered count display
+      document.getElementById('kahootHostAnsweredCount').innerHTML = `Respondieron: <b>0 / ${totalTeams}</b>`;
 
       // 20s Countdown Timer on Host
       let timeLeft = 20;
@@ -3474,9 +3888,19 @@
 
     function updateHostAnsweredCount(teams) {
       if (currentHostRoomData.status !== 'QUESTION') return;
-      const list = Object.values(teams);
+      const list = Object.values(teams || {});
       const currentQ = currentHostRoomData.currentQ || 0;
-      const answeredList = list.filter(t => t.answers && t.answers[`q_${currentQ}`]);
+      const qKey = `q_${currentQ}`;
+      
+      const answeredList = list.filter(t => {
+        if (!t) return false;
+        if (t.lastAnsweredQ === currentQ) return true;
+        if (t[`answered_${currentQ}`] === true) return true;
+        if (t[`ans_${currentQ}`] !== undefined) return true;
+        if (t.answers && (t.answers[qKey] !== undefined || t.answers[currentQ] !== undefined)) return true;
+        if (t[`answers.q_${currentQ}`] !== undefined) return true;
+        return false;
+      });
       
       const countEl = document.getElementById('kahootHostAnsweredCount');
       if (countEl) {
@@ -3487,6 +3911,7 @@
       if (list.length > 0 && answeredList.length >= list.length) {
         if (kahootHostTimerInterval) {
           clearInterval(kahootHostTimerInterval);
+          kahootHostTimerInterval = null;
           revealKahootAnswerHost();
         }
       }
@@ -3570,9 +3995,9 @@
       setTimeout(() => soundEngine.playTone(1046.5, 'sine', 0.6, 0.3), 600);
 
       const sorted = Object.values(allConnectedTeams).sort((a, b) => (b.score || 0) - (a.score || 0));
-      const first = sorted[0] || { name: '1er Lugar', score: 0 };
-      const second = sorted[1] || { name: '2do Lugar', score: 0 };
-      const third = sorted[2] || { name: '3er Lugar', score: 0 };
+      const first = sorted[0] || { name: '1er Lugar', score: 0, members: [] };
+      const second = sorted[1] || { name: '2do Lugar', score: 0, members: [] };
+      const third = sorted[2] || { name: '3er Lugar', score: 0, members: [] };
 
       const podiumContainer = document.getElementById('kahootHostPodiumContainer');
       podiumContainer.innerHTML = `
@@ -3607,7 +4032,54 @@
         </div>
       `;
 
+      // Construct and save full Battle record permanently to Firestore and localStorage
+      const battleRecord = {
+        battleId: 'battle_' + Date.now(),
+        pin: currentKahootPin || '2026',
+        date: new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toISOString(),
+        totalQuestions: EXAM_QUESTIONS.length,
+        totalTeams: sorted.length,
+        winnerName: first.name,
+        winnerScore: first.score || 0,
+        winnerMembers: first.members || [],
+        podium: {
+          first: { name: first.name, score: first.score || 0, members: first.members || [] },
+          second: { name: second.name, score: second.score || 0, members: second.members || [] },
+          third: { name: third.name, score: third.score || 0, members: third.members || [] }
+        },
+        teams: sorted.map((t, idx) => ({
+          rank: idx + 1,
+          id: t.id,
+          name: t.name,
+          members: t.members || [],
+          score: t.score || 0,
+          answers: t.answers || {}
+        }))
+      };
+
+      await saveKahootBattleToFirestore(battleRecord);
       await updateHostRoomInFirestore({ status: 'PODIUM', winner: first });
+    }
+
+    async function saveKahootBattleToFirestore(record) {
+      try {
+        let history = [];
+        const local = localStorage.getItem('ecogas_kahoot_history');
+        if (local) history = JSON.parse(local);
+        history.unshift(record);
+        localStorage.setItem('ecogas_kahoot_history', JSON.stringify(history));
+      } catch(e) {}
+
+      if (window.db && window.firestoreCol && window.firestoreAddDoc) {
+        try {
+          const colRef = window.firestoreCol(window.db, 'ecogas_kahoot_historial');
+          await window.firestoreAddDoc(colRef, record);
+          console.log('✅ Batalla de equipos guardada en Firestore');
+        } catch (e) {
+          console.warn('Error saving kahoot battle to Firestore:', e);
+        }
+      }
     }
 
     async function updateHostRoomInFirestore(patch) {
