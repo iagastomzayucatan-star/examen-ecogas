@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   
   <title>ECOGAS LP | Capacitación, Examen & Batalla de Equipos</title>
   <meta name="title" content="ECOGAS LP | Capacitación, Examen & Batalla de Equipos" />
@@ -1099,8 +1102,13 @@
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 20px;">⚙️</span>
           <div>
-            <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Editor de Preguntas & Banco de Reactivos</h3>
-            <p style="font-size: 11px; color: #86efac;">Modifica enunciados, opciones, o sube/pega imágenes desde tu PC o portapapeles.</p>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Editor de Preguntas & Banco de Reactivos</h3>
+              <span id="editorCloudSyncBadge" style="font-size: 10px; font-weight: 800; background: rgba(46,164,40,0.2); color: #4ade80; padding: 2px 7px; border-radius: 8px; border: 1px solid rgba(46,164,40,0.4);">
+                ☁️ Sincronizado en Firebase Cloud
+              </span>
+            </div>
+            <p style="font-size: 11px; color: #86efac; margin-top: 2px;">Modifica enunciados, opciones, o sube/pega imágenes desde tu PC o portapapeles.</p>
           </div>
         </div>
         <button onclick="closeQuestionsEditorModal()" style="background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">✕</button>
@@ -1110,7 +1118,7 @@
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span style="font-size: 12px; color: #cbd5e1; font-weight: 700;">Seleccionar Reactivo:</span>
-          <select id="editorQuestionSelector" onchange="loadQuestionIntoEditor(this.value)" class="input-field" style="width: auto; padding: 5px 10px; font-size: 12px;">
+          <select id="editorQuestionSelector" onchange="handleEditorQuestionSelectorChange(this.value)" class="input-field" style="width: auto; padding: 5px 10px; font-size: 12px;">
             <!-- Options populated in JS -->
           </select>
         </div>
@@ -1242,7 +1250,7 @@
           <button onclick="saveCurrentQuestionEdits()" class="btn-gold" style="padding: 8px 16px; font-size: 12px;">
             💾 Guardar Reactivo
           </button>
-          <button onclick="closeQuestionsEditorModal()" class="btn-primary" style="padding: 8px 16px; font-size: 12px;">
+          <button onclick="applyAndCloseQuestionsEditor()" class="btn-primary" style="padding: 8px 18px; font-size: 12px; font-weight: 800;">
             ✓ Listo y Aplicar
           </button>
         </div>
@@ -2199,6 +2207,13 @@
       sel.value = currentEditingQuestionIndex;
     }
 
+    function handleEditorQuestionSelectorChange(newIdx) {
+      // Auto-save whatever was currently being edited before switching
+      saveQuestionFromForm(currentEditingQuestionIndex, true);
+      currentEditingQuestionIndex = parseInt(newIdx);
+      loadQuestionIntoEditor(currentEditingQuestionIndex);
+    }
+
     function loadQuestionIntoEditor(idx) {
       currentEditingQuestionIndex = parseInt(idx);
       const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
@@ -2409,14 +2424,14 @@
       });
     }
 
-    function saveCurrentQuestionEdits() {
-      const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
-      if (!q) return;
+    function saveQuestionFromForm(index, silent = false) {
+      const q = EXAM_QUESTIONS[index];
+      if (!q) return false;
 
       const qText = document.getElementById('editQuestionText').value.trim();
       if (!qText) {
-        alert('Por favor escribe el texto de la pregunta.');
-        return;
+        if (!silent) alert('Por favor escribe el texto de la pregunta.');
+        return false;
       }
 
       const imgChoice = document.getElementById('editQuestionImageSelect').value;
@@ -2444,10 +2459,25 @@
 
       persistQuestions();
       populateEditorQuestionSelector();
-      alert('✓ Pregunta e imagen guardadas correctamente.');
+      return true;
+    }
+
+    function saveCurrentQuestionEdits() {
+      const ok = saveQuestionFromForm(currentEditingQuestionIndex, false);
+      if (ok) {
+        alert('✓ Pregunta e imagen guardadas correctamente.');
+      }
+    }
+
+    function applyAndCloseQuestionsEditor() {
+      saveQuestionFromForm(currentEditingQuestionIndex, true);
+      populateEditorQuestionSelector();
+      closeQuestionsEditorModal();
+      alert('✓ Todos los cambios de preguntas e imágenes se aplicaron y sincronizaron en Firebase.');
     }
 
     function addNewQuestionToEditor() {
+      saveQuestionFromForm(currentEditingQuestionIndex, true);
       const newId = EXAM_QUESTIONS.length + 1;
       const newQ = {
         id: newId,
@@ -2492,12 +2522,30 @@
 
     async function persistQuestions() {
       localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+      const badge = document.getElementById('editorCloudSyncBadge');
+      if (badge) {
+        badge.innerText = '⏳ Guardando en Firebase...';
+        badge.style.color = '#fde047';
+      }
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
           const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
           await window.firestoreSetDoc(docRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
+          if (badge) {
+            badge.innerText = '☁️ Sincronizado en Firebase Cloud';
+            badge.style.color = '#4ade80';
+          }
         } catch(e) {
-          console.warn('Firestore questions save fallback');
+          console.warn('Firestore questions save fallback:', e);
+          if (badge) {
+            badge.innerText = '⚠️ Guardado Localmente';
+            badge.style.color = '#fb923c';
+          }
+        }
+      } else {
+        if (badge) {
+          badge.innerText = '💾 Guardado Local';
+          badge.style.color = '#93c5fd';
         }
       }
     }
@@ -4137,20 +4185,31 @@
 
       console.log('✅ Firebase App Ecogas connected successfully (app-ecogas-64a25)');
 
-      // Fetch dynamic custom questions if already stored in Firestore
+      // Real-time synchronization of custom questions from Firestore
       try {
         const qRef = doc(db, 'ecogas_kahoot_config', 'questions');
-        const qSnap = await getDoc(qRef);
-        if (qSnap.exists()) {
-          const cloudData = qSnap.data();
-          if (cloudData.list && Array.isArray(cloudData.list) && cloudData.list.length > 0) {
-            EXAM_QUESTIONS = cloudData.list;
-            localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
-            console.log('✅ Synced questions from Firestore');
+        onSnapshot(qRef, (qSnap) => {
+          if (qSnap.exists()) {
+            const cloudData = qSnap.data();
+            if (cloudData.list && Array.isArray(cloudData.list) && cloudData.list.length > 0) {
+              EXAM_QUESTIONS = cloudData.list;
+              localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+              console.log('✅ Sincronización en tiempo real de preguntas desde Firestore (' + EXAM_QUESTIONS.length + ' reactivos)');
+
+              // If editor modal is currently open, refresh the question selector
+              const editorModal = document.getElementById('modalQuestionsEditor');
+              if (editorModal && !editorModal.classList.contains('hidden')) {
+                if (typeof populateEditorQuestionSelector === 'function') {
+                  populateEditorQuestionSelector();
+                }
+              }
+            }
           }
-        }
+        }, (err) => {
+          console.warn('Questions onSnapshot error:', err);
+        });
       } catch(err) {
-        console.warn('Questions cloud sync fallback');
+        console.warn('Questions cloud listener setup fallback:', err);
       }
 
     } catch (e) {
