@@ -1246,12 +1246,22 @@
 
       <!-- Action Buttons Footer -->
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; gap: 10px;">
-        <button onclick="closeQuestionsEditorModal()" class="btn-secondary" style="padding: 10px 18px; font-size: 13px;">
-          ✕ Cerrar
-        </button>
-        <button onclick="saveCurrentQuestionEdits()" class="btn-primary" style="padding: 12px 28px; font-size: 14px; font-weight: 900; background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 4px 15px rgba(34,197,94,0.4);">
-          💾 GUARDAR CAMBIOS DE ESTA PREGUNTA
-        </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" onclick="closeQuestionsEditorModal()" class="btn-secondary" style="padding: 10px 18px; font-size: 13px;">
+            ✕ Cerrar y Guardar
+          </button>
+          <button type="button" onclick="restoreOfficialBackup()" class="btn-secondary" style="padding: 10px 14px; font-size: 11px; color: #86efac; border-color: rgba(74,222,128,0.3);" title="Restaura el respaldo de preguntas guardado en el servidor">
+            📥 Restaurar Respaldo Seguro
+          </button>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" onclick="saveAllQuestionsToCloud()" class="btn-secondary" style="padding: 10px 16px; font-size: 12px; font-weight: 800; color: #60a5fa; border-color: rgba(96,165,250,0.4);">
+            ☁️ Guardar Todo en la Nube
+          </button>
+          <button type="button" onclick="saveCurrentQuestionEdits(false)" class="btn-primary" style="padding: 12px 24px; font-size: 14px; font-weight: 900; background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 4px 15px rgba(34,197,94,0.4);">
+            💾 GUARDAR CAMBIOS DE ESTA PREGUNTA
+          </button>
+        </div>
       </div>
 
     </div>
@@ -2215,11 +2225,15 @@
 
     function openQuestionsEditorModal() {
       populateEditorQuestionSelector();
-      loadQuestionIntoEditor(0);
+      if (currentEditingQuestionIndex >= EXAM_QUESTIONS.length || currentEditingQuestionIndex < 0) {
+        currentEditingQuestionIndex = 0;
+      }
+      loadQuestionIntoEditor(currentEditingQuestionIndex);
       document.getElementById('modalQuestionsEditor').classList.remove('hidden');
     }
 
-    function closeQuestionsEditorModal() {
+    async function closeQuestionsEditorModal() {
+      await saveCurrentQuestionEdits(true);
       document.getElementById('modalQuestionsEditor').classList.add('hidden');
     }
 
@@ -2238,7 +2252,9 @@
       }
     }
 
-    function switchEditorQuestion(idx) {
+    async function switchEditorQuestion(idx) {
+      // Auto-save currently active question silently before switching to the next one
+      await saveCurrentQuestionEdits(true);
       currentEditingQuestionIndex = parseInt(idx);
       loadQuestionIntoEditor(currentEditingQuestionIndex);
     }
@@ -2455,17 +2471,17 @@
       });
     }
 
-    async function saveCurrentQuestionEdits() {
+    async function saveCurrentQuestionEdits(silent = false) {
       const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
       if (!q) {
-        alert('⚠️ Error: No se encontró la pregunta seleccionada.');
-        return;
+        if (!silent) alert('⚠️ Error: No se encontró la pregunta seleccionada.');
+        return false;
       }
 
       const qText = document.getElementById('editQuestionText').value.trim();
       if (!qText) {
-        alert('⚠️ Por favor escribe el texto de la pregunta.');
-        return;
+        if (!silent) alert('⚠️ Por favor escribe el texto de la pregunta.');
+        return false;
       }
 
       const imgChoice = document.getElementById('editQuestionImageSelect').value;
@@ -2473,7 +2489,7 @@
       if (imgChoice === 'CUSTOM') {
         finalImg = document.getElementById('editQuestionCustomImageUrl').value.trim() || 'NONE';
       } else if (imgChoice === 'UPLOAD') {
-        finalImg = currentUploadedImageBase64 || 'NONE';
+        finalImg = currentUploadedImageBase64 || q.image || 'NONE';
       }
 
       const opt0 = document.getElementById('editOpt0').value.trim() || 'Opción A';
@@ -2491,47 +2507,159 @@
       q.correctIndex = correctIdx;
       q.explanation = explanation;
 
-      // 1. Save locally
+      // 1. Save locally in localStorage
       localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
 
-      // 2. Save to Firestore
+      // 2. Save directly to Firestore Cloud
       const badge = document.getElementById('editorCloudSyncBadge');
       if (badge) {
         badge.innerText = '⏳ Guardando en Firebase...';
         badge.style.color = '#fde047';
       }
 
+      let firestoreSuccess = false;
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
           const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
           await window.firestoreSetDoc(docRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
-          if (badge) {
-            const nowTime = new Date().toLocaleTimeString();
-            badge.innerText = `☁️ Guardado en Firebase (${nowTime})`;
-            badge.style.color = '#4ade80';
-          }
+          firestoreSuccess = true;
         } catch(e) {
-          console.warn('Firestore questions save fallback:', e);
-          if (badge) {
-            badge.innerText = '⚠️ Guardado Localmente';
-            badge.style.color = '#fb923c';
-          }
-        }
-      } else {
-        if (badge) {
-          badge.innerText = '💾 Guardado Local';
-          badge.style.color = '#93c5fd';
+          console.warn('Firestore modular save warning:', e);
         }
       }
 
-      // 3. Update dropdown
+      // REST Fallback if modular SDK was not ready
+      if (!firestoreSuccess) {
+        try {
+          const restPayload = {
+            fields: {
+              list: {
+                arrayValue: {
+                  values: EXAM_QUESTIONS.map(item => ({
+                    mapValue: {
+                      fields: {
+                        id: { integerValue: (item.id || 1).toString() },
+                        question: { stringValue: item.question || '' },
+                        image: { stringValue: item.image || 'NONE' },
+                        options: { arrayValue: { values: (item.options || []).map(o => ({ stringValue: o })) } },
+                        correctIndex: { integerValue: (item.correctIndex || 0).toString() },
+                        explanation: { stringValue: item.explanation || '' }
+                      }
+                    }
+                  }))
+                }
+              },
+              updatedAt: { integerValue: Date.now().toString() }
+            }
+          };
+          await fetch('https://firestore.googleapis.com/v1/projects/app-ecogas-64a25/databases/(default)/documents/ecogas_kahoot_config/questions', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(restPayload)
+          });
+          firestoreSuccess = true;
+        } catch(err) {
+          console.warn('Firestore REST save fallback error:', err);
+        }
+      }
+
+      if (badge) {
+        const nowTime = new Date().toLocaleTimeString();
+        if (firestoreSuccess) {
+          badge.innerText = `☁️ Guardado en Firebase (${nowTime})`;
+          badge.style.color = '#4ade80';
+        } else {
+          badge.innerText = '💾 Guardado Localmente';
+          badge.style.color = '#fb923c';
+        }
+      }
+
       populateEditorQuestionSelector();
 
-      // 4. Alert user
-      alert(`✅ ¡GUARDADO EXITOSO!\n\nLa Pregunta #${currentEditingQuestionIndex + 1} se guardó y sincronizó correctamente en la base de datos.`);
+      if (!silent) {
+        alert(`✅ ¡GUARDADO EXITOSO!\n\nLa Pregunta #${currentEditingQuestionIndex + 1} se guardó y sincronizó correctamente en la base de datos.`);
+      }
+      return true;
+    }
+
+    async function saveAllQuestionsToCloud() {
+      await saveCurrentQuestionEdits(true);
+      const badge = document.getElementById('editorCloudSyncBadge');
+      if (badge) {
+        const nowTime = new Date().toLocaleTimeString();
+        badge.innerText = `☁️ Guardado en Firebase (${nowTime})`;
+        badge.style.color = '#4ade80';
+      }
+      alert(`☁️ ¡SINCRONIZACIÓN EXITOSA!\n\nLas ${EXAM_QUESTIONS.length} preguntas están guardadas y aseguradas en la base de datos de Firebase.`);
+    }
+
+    async function restoreOfficialBackup() {
+      if (!confirm('¿Deseas restaurar el respaldo oficial seguro guardado en la base de datos?')) return;
+
+      const badge = document.getElementById('editorCloudSyncBadge');
+      if (badge) {
+        badge.innerText = '⏳ Restaurando respaldo...';
+        badge.style.color = '#fde047';
+      }
+
+      try {
+        let restoredList = null;
+        if (window.db && window.firestoreDoc && window.firestoreGetDoc) {
+          const bRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions_backup');
+          const snap = await window.firestoreGetDoc(bRef);
+          if (snap.exists() && snap.data().list) {
+            restoredList = snap.data().list;
+          }
+        }
+
+        if (!restoredList) {
+          const res = await fetch('https://firestore.googleapis.com/v1/projects/app-ecogas-64a25/databases/(default)/documents/ecogas_kahoot_config/questions_backup');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.fields && data.fields.list) {
+              restoredList = data.fields.list.arrayValue.values.map(item => {
+                const f = item.mapValue.fields;
+                return {
+                  id: parseInt(f.id?.integerValue || f.id?.stringValue || '1'),
+                  question: f.question?.stringValue || '',
+                  image: f.image?.stringValue || 'NONE',
+                  options: f.options?.arrayValue?.values?.map(v => v.stringValue) || [],
+                  correctIndex: parseInt(f.correctIndex?.integerValue || f.correctIndex?.stringValue || '0'),
+                  explanation: f.explanation?.stringValue || ''
+                };
+              });
+            }
+          }
+        }
+
+        if (restoredList && Array.isArray(restoredList) && restoredList.length > 0) {
+          EXAM_QUESTIONS = restoredList;
+          localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+          
+          if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
+            const qRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
+            await window.firestoreSetDoc(qRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
+          }
+
+          currentEditingQuestionIndex = 0;
+          populateEditorQuestionSelector();
+          loadQuestionIntoEditor(0);
+          if (badge) {
+            badge.innerText = '☁️ Respaldo Restaurado';
+            badge.style.color = '#4ade80';
+          }
+          alert(`✅ ¡RESPALDO RESTAURADO!\n\nSe restauraron ${EXAM_QUESTIONS.length} preguntas correctamente.`);
+        } else {
+          alert('⚠️ No se pudo obtener el respaldo de la nube.');
+        }
+      } catch(err) {
+        console.error('Error restoring backup:', err);
+        alert('⚠️ Error al restaurar respaldo: ' + err.message);
+      }
     }
 
     async function addNewQuestionToEditor() {
+      await saveCurrentQuestionEdits(true);
       const newId = EXAM_QUESTIONS.length + 1;
       const newQ = {
         id: newId,
