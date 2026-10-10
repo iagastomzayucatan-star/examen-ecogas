@@ -1021,7 +1021,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 16px;">⚡</span>
-            <span id="kahootHostQIndex" style="font-size: 13px; font-weight: 800; color: #86efac;">Pregunta 1 de 15</span>
+            <span id="kahootHostQIndex" style="font-size: 13px; font-weight: 800; color: #86efac;">Pregunta 1 de 12</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <div id="kahootHostAnsweredCount" style="font-size: 11px; color: #cbd5e1;">Respondieron: <b>0</b></div>
@@ -1523,24 +1523,45 @@
     }
 
     // ==========================================
-    // 🎵 WEB AUDIO SYNTHESIZER (KAHOOT MUSIC)
+    // 🎵 AUDIO & SOUND ENGINE (KAHOOT MUSIC & SFX)
     // ==========================================
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.isMuted = false;
         this.musicInterval = null;
+        this.lobbyAudio = null;
+        this.questionAudio = null;
+        this.initAudioElements();
+      }
+
+      initAudioElements() {
+        try {
+          this.lobbyAudio = new Audio('audio_lobby.mp3');
+          this.lobbyAudio.loop = true;
+          this.lobbyAudio.volume = 0.7;
+          this.lobbyAudio.preload = 'auto';
+
+          this.questionAudio = new Audio('audio_question_20s.mp3');
+          this.questionAudio.loop = false;
+          this.questionAudio.volume = 0.85;
+          this.questionAudio.preload = 'auto';
+        } catch (e) {
+          console.warn('Audio elements init warning:', e);
+        }
       }
 
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           if (AudioContext) {
-            this.ctx = new AudioContext();
+            try {
+              this.ctx = new AudioContext();
+            } catch(e) {}
           }
         }
         if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+          this.ctx.resume().catch(() => {});
         }
       }
 
@@ -1572,32 +1593,40 @@
         if (this.isMuted) return;
         this.stopMusic();
         this.init();
-        if (!this.ctx) return;
 
-        const lobbyNotes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63];
-        let step = 0;
-        this.musicInterval = setInterval(() => {
-          if (this.isMuted) return;
-          const note = lobbyNotes[step % lobbyNotes.length];
-          this.playTone(note, 'triangle', 0.25, 0.08);
-          step++;
-        }, 320);
+        if (this.lobbyAudio) {
+          try {
+            this.lobbyAudio.currentTime = 0;
+            const playPromise = this.lobbyAudio.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+              playPromise.catch(err => {
+                console.log('Lobby music autoplay waiting for interaction:', err);
+              });
+            }
+          } catch(e) {
+            console.warn('Lobby audio play error:', e);
+          }
+        }
       }
 
       playQuestionMusic(durationSeconds = 20) {
         if (this.isMuted) return;
         this.stopMusic();
         this.init();
-        if (!this.ctx) return;
 
-        const bassLine = [130.81, 146.83, 164.81, 174.61, 196.00];
-        let step = 0;
-        this.musicInterval = setInterval(() => {
-          if (this.isMuted) return;
-          const note = bassLine[step % bassLine.length];
-          this.playTone(note, 'sawtooth', 0.18, 0.06);
-          step++;
-        }, 250);
+        if (this.questionAudio) {
+          try {
+            this.questionAudio.currentTime = 0;
+            const playPromise = this.questionAudio.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+              playPromise.catch(err => {
+                console.log('Question audio autoplay waiting for interaction:', err);
+              });
+            }
+          } catch(e) {
+            console.warn('Question audio play error:', e);
+          }
+        }
       }
 
       playCorrectSound() {
@@ -1614,6 +1643,18 @@
       }
 
       stopMusic() {
+        if (this.lobbyAudio) {
+          try {
+            this.lobbyAudio.pause();
+            this.lobbyAudio.currentTime = 0;
+          } catch(e) {}
+        }
+        if (this.questionAudio) {
+          try {
+            this.questionAudio.pause();
+            this.questionAudio.currentTime = 0;
+          } catch(e) {}
+        }
         if (this.musicInterval) {
           clearInterval(this.musicInterval);
           this.musicInterval = null;
@@ -1622,6 +1663,12 @@
 
       toggleMute() {
         this.isMuted = !this.isMuted;
+        if (this.lobbyAudio) {
+          this.lobbyAudio.muted = this.isMuted;
+        }
+        if (this.questionAudio) {
+          this.questionAudio.muted = this.isMuted;
+        }
         if (this.isMuted) {
           this.stopMusic();
         }
@@ -1630,6 +1677,8 @@
     }
 
     const soundEngine = new SoundEngine();
+    window.addEventListener('click', () => soundEngine.init(), { once: true });
+    window.addEventListener('touchstart', () => soundEngine.init(), { once: true });
 
     function toggleAudio() {
       const isMuted = soundEngine.toggleMute();
@@ -1641,7 +1690,7 @@
     }
 
     // ==========================================
-    // 📚 15 EXAM & KAHOOT QUESTIONS (DEFAULT MANUAL ECOGAS LP)
+    // 📚 12 EXAM & KAHOOT QUESTIONS (DEFAULT MANUAL ECOGAS LP)
     // ==========================================
     const DEFAULT_EXAM_QUESTIONS = [
       {
