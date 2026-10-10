@@ -10,7 +10,7 @@
   <!-- GitHub Pages & Browser Cache-Buster -->
   <script>
     (function() {
-      const APP_VERSION = 'v2026.10.09.v8';
+      const APP_VERSION = 'v2026.10.10.v1';
       try {
         const url = new URL(window.location.href);
         if (url.searchParams.get('v') !== APP_VERSION) {
@@ -1140,11 +1140,14 @@
           </span>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button onclick="addNewQuestionToEditor()" class="btn-primary" style="padding: 6px 12px; font-size: 11px;">
+          <button type="button" onclick="addNewQuestionToEditor()" class="btn-primary" style="padding: 6px 12px; font-size: 11px;">
             ➕ Nueva Pregunta
           </button>
-          <button onclick="deleteCurrentEditorQuestion()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; color: #fda4af;">
+          <button type="button" onclick="deleteCurrentEditorQuestion()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; color: #fda4af;">
             🗑️ Eliminar
+          </button>
+          <button type="button" onclick="restoreOfficialBackup()" class="btn-secondary" style="padding: 6px 10px; font-size: 11px; color: #a5f3fc;" title="Restaurar el respaldo seguro de 12 preguntas guardado en Firebase">
+            🛡️ Respaldo Oficial
           </button>
         </div>
       </div>
@@ -1173,6 +1176,8 @@
               <option value="img_vaporizador.jpg">⚙️ Vaporizador / Reductor (Manual)</option>
               <option value="img_inyectores.jpg">⚡ Riel de Inyectores (Manual)</option>
               <option value="img_flotilla.jpg">🚛 Flotillas Comerciales (Manual)</option>
+              <option value="img_garantia.jpg">🛡️ ¿Garantía? (Manual)</option>
+              <option value="img_formato.jpg">📄 ¿En qué formato? (Manual)</option>
               <option value="CUSTOM">🔗 Ingresar URL Web Externa</option>
             </select>
             <input type="text" id="editQuestionCustomImageUrl" class="input-field hidden" placeholder="https://ejemplo.com/foto.jpg" oninput="previewCustomUrlImage()" />
@@ -1259,23 +1264,13 @@
       </div>
 
       <!-- Action Buttons Footer -->
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; gap: 10px;">
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" onclick="closeQuestionsEditorModal()" class="btn-secondary" style="padding: 10px 18px; font-size: 13px;">
-            ✕ Cerrar y Guardar
-          </button>
-          <button type="button" onclick="restoreOfficialBackup()" class="btn-secondary" style="padding: 10px 14px; font-size: 11px; color: #86efac; border-color: rgba(74,222,128,0.3);" title="Restaura el respaldo de preguntas guardado en el servidor">
-            📥 Restaurar Respaldo Seguro
-          </button>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" onclick="saveAllQuestionsToCloud()" class="btn-secondary" style="padding: 10px 16px; font-size: 12px; font-weight: 800; color: #60a5fa; border-color: rgba(96,165,250,0.4);">
-            ☁️ Guardar Todo en la Nube
-          </button>
-          <button type="button" onclick="saveCurrentQuestionEdits(false)" class="btn-primary" style="padding: 12px 24px; font-size: 14px; font-weight: 900; background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 4px 15px rgba(34,197,94,0.4);">
-            💾 GUARDAR CAMBIOS DE ESTA PREGUNTA
-          </button>
-        </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; gap: 10px;">
+        <button type="button" onclick="closeQuestionsEditorModal()" class="btn-secondary" style="padding: 10px 18px; font-size: 13px;">
+          ✕ Cerrar
+        </button>
+        <button type="button" id="btnSaveQuestionMain" onclick="saveCurrentQuestionEdits()" class="btn-primary" style="padding: 12px 28px; font-size: 14px; font-weight: 900; background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 4px 15px rgba(34,197,94,0.4);">
+          💾 GUARDAR CAMBIOS DE ESTA PREGUNTA
+        </button>
       </div>
 
     </div>
@@ -1836,16 +1831,16 @@
       },
       {
         id: 10,
-        question: '¿Qué función cumple la Válvula de Exceso de Flujo integrada en la multiválvula del tanque?',
-        image: 'img_cilindrico.jpg',
+        question: '¿De cuánto tiempo es la garantía del equipo de gas LP y qué condición debe cumplir el cliente para mantenerla?',
+        image: 'img_garantia.jpg',
         options: [
-          'Permite cargar el tanque en menos de 10 segundos.',
-          'Corta de forma instantánea la salida de gas si detecta una fractura o ruptura en la tubería de combustible.',
-          'Aumenta la potencia del motor inyectando gas líquido al múltiple.',
-          'Purga el aire del tanque durante la primera conversión.'
+          'Es de seis meses, y el cliente debe realizar revisiones técnicas trimestrales en talleres certificados.',
+          'Es de dos años, siempre y cuando el cliente pague una póliza de mantenimiento anual en sucursal.',
+          'Es de un año, y el cliente debe realizar cargas en Estaciones de Gas Tomza con su Código Personal.',
+          'Es de un año, y el cliente debe cargar gas en cualquier estación presentando siempre su factura original.'
         ],
         correctIndex: 1,
-        explanation: 'La válvula de exceso de flujo es un dispositivo de seguridad pasiva que bloquea la salida de gas de inmediato ante cualquier fuga o rotura de línea.'
+        explanation: 'Es de un año, y el cliente debe realizar cargas en Estaciones de Gas Tomza con su Código Personal para validar su garantía.'
       },
       {
         id: 11,
@@ -1862,16 +1857,16 @@
       },
       {
         id: 12,
-        question: '¿Qué mantenimiento preventivo periódico se requiere en el sistema de Gas LP de 5ª generación?',
-        image: 'img_vaporizador.jpg',
+        question: '¿En qué formato se pueden entregar los requisitos para el financiamiento?',
+        image: 'img_formato.jpg',
         options: [
-          'Cambio de filtro de gas (fase líquida y gaseosa) y calibración por software cada 20,000 a 30,000 km.',
-          'Cambio de tanque y vaporizador cada 6 meses obligatoriamente.',
-          'No requiere ningún tipo de mantenimiento durante la vida del auto.',
-          'Rellenar el vaporizador con líquido de frenos cada semana.'
+          'Obligatoriamente en original y copia física.',
+          'Todo puede ser en foto o PDF.',
+          'Únicamente impresos a color.',
+          'Solo en copias certificadas por un notario.'
         ],
-        correctIndex: 0,
-        explanation: 'El servicio preventivo habitual consiste en el reemplazo de los filtros de fase gaseosa y líquida, y verificación computarizada de los mapas de inyección.'
+        correctIndex: 1,
+        explanation: 'Para el financiamiento de ECOGAS LP, todos los requisitos y documentos pueden enviarse de forma digital en foto o formato PDF.'
       }
     ];
 
@@ -2246,8 +2241,7 @@
       document.getElementById('modalQuestionsEditor').classList.remove('hidden');
     }
 
-    async function closeQuestionsEditorModal() {
-      await saveCurrentQuestionEdits(true);
+    function closeQuestionsEditorModal() {
       document.getElementById('modalQuestionsEditor').classList.add('hidden');
     }
 
@@ -2266,9 +2260,7 @@
       }
     }
 
-    async function switchEditorQuestion(idx) {
-      // Auto-save currently active question silently before switching to the next one
-      await saveCurrentQuestionEdits(true);
+    function switchEditorQuestion(idx) {
       currentEditingQuestionIndex = parseInt(idx);
       loadQuestionIntoEditor(currentEditingQuestionIndex);
     }
@@ -2307,7 +2299,7 @@
         previewWrapper.classList.remove('hidden');
         previewImg.src = q.image;
         currentUploadedImageBase64 = q.image;
-      } else if (['img_4cil.jpg', 'img_6cil.jpg', 'img_8cil.jpg', 'img_toroidal.jpg', 'img_cilindrico.jpg', 'img_vaporizador.jpg', 'img_inyectores.jpg', 'img_flotilla.jpg'].includes(q.image)) {
+      } else if (['img_4cil.jpg', 'img_6cil.jpg', 'img_8cil.jpg', 'img_toroidal.jpg', 'img_cilindrico.jpg', 'img_vaporizador.jpg', 'img_inyectores.jpg', 'img_flotilla.jpg', 'img_garantia.jpg', 'img_formato.jpg'].includes(q.image)) {
         imgSel.value = q.image;
         customInp.classList.add('hidden');
         uploadBox.classList.add('hidden');
@@ -2379,8 +2371,8 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_W = 600;
-          const MAX_H = 450;
+          const MAX_W = 480;
+          const MAX_H = 320;
 
           if (width > height) {
             if (width > MAX_W) {
@@ -2399,7 +2391,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.72);
+          const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.68);
           
           currentUploadedImageBase64 = optimizedBase64;
           document.getElementById('editQuestionImageSelect').value = 'UPLOAD';
@@ -2416,7 +2408,7 @@
     }
 
     function clearEditorUploadedImage() {
-      currentUploadedImageBase64 = null;
+      currentUploadedImageBase64 = 'NONE';
       document.getElementById('editorImagePreview').src = '';
       document.getElementById('editorImagePreviewWrapper').classList.add('hidden');
       document.getElementById('editorImagePrompt').classList.remove('hidden');
@@ -2486,15 +2478,23 @@
     }
 
     async function saveCurrentQuestionEdits(silent = false) {
+      const btn = document.getElementById('btnSaveQuestionMain');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⏳ Guardando en Firebase...';
+      }
+
       const q = EXAM_QUESTIONS[currentEditingQuestionIndex];
       if (!q) {
-        if (!silent) alert('⚠️ Error: No se encontró la pregunta seleccionada.');
+        alert('⚠️ Error: No se encontró la pregunta seleccionada.');
+        if (btn) { btn.disabled = false; btn.innerText = '💾 GUARDAR CAMBIOS DE ESTA PREGUNTA'; }
         return false;
       }
 
       const qText = document.getElementById('editQuestionText').value.trim();
       if (!qText) {
-        if (!silent) alert('⚠️ Por favor escribe el texto de la pregunta.');
+        alert('⚠️ Por favor escribe el texto de la pregunta.');
+        if (btn) { btn.disabled = false; btn.innerText = '💾 GUARDAR CAMBIOS DE ESTA PREGUNTA'; }
         return false;
       }
 
@@ -2503,7 +2503,13 @@
       if (imgChoice === 'CUSTOM') {
         finalImg = document.getElementById('editQuestionCustomImageUrl').value.trim() || 'NONE';
       } else if (imgChoice === 'UPLOAD') {
-        finalImg = currentUploadedImageBase64 || q.image || 'NONE';
+        if (currentUploadedImageBase64 === 'NONE') {
+          finalImg = 'NONE';
+        } else if (currentUploadedImageBase64) {
+          finalImg = currentUploadedImageBase64;
+        } else {
+          finalImg = q.image || 'NONE';
+        }
       }
 
       const opt0 = document.getElementById('editOpt0').value.trim() || 'Opción A';
@@ -2531,19 +2537,18 @@
         badge.style.color = '#fde047';
       }
 
-      let firestoreSuccess = false;
+      let firestoreError = null;
       if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
         try {
           const docRef = window.firestoreDoc(window.db, 'ecogas_kahoot_config', 'questions');
           await window.firestoreSetDoc(docRef, { list: EXAM_QUESTIONS, updatedAt: Date.now() }, { merge: true });
-          firestoreSuccess = true;
         } catch(e) {
-          console.warn('Firestore modular save warning:', e);
+          console.warn('Firestore modular save error:', e);
+          firestoreError = e;
         }
       }
 
-      // REST Fallback if modular SDK was not ready
-      if (!firestoreSuccess) {
+      if (firestoreError || !window.db) {
         try {
           const restPayload = {
             fields: {
@@ -2566,45 +2571,51 @@
               updatedAt: { integerValue: Date.now().toString() }
             }
           };
-          await fetch('https://firestore.googleapis.com/v1/projects/app-ecogas-64a25/databases/(default)/documents/ecogas_kahoot_config/questions', {
+          const res = await fetch('https://firestore.googleapis.com/v1/projects/app-ecogas-64a25/databases/(default)/documents/ecogas_kahoot_config/questions', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(restPayload)
           });
-          firestoreSuccess = true;
+          if (res.ok) {
+            firestoreError = null;
+          } else {
+            const errData = await res.json();
+            firestoreError = new Error(errData.error?.message || 'Error en el servidor Firestore');
+          }
         } catch(err) {
-          console.warn('Firestore REST save fallback error:', err);
+          firestoreError = err;
         }
       }
 
       if (badge) {
         const nowTime = new Date().toLocaleTimeString();
-        if (firestoreSuccess) {
+        if (!firestoreError) {
           badge.innerText = `☁️ Guardado en Firebase (${nowTime})`;
           badge.style.color = '#4ade80';
         } else {
-          badge.innerText = '💾 Guardado Localmente';
-          badge.style.color = '#fb923c';
+          badge.innerText = '⚠️ Error en Firebase';
+          badge.style.color = '#ef4444';
         }
       }
 
       populateEditorQuestionSelector();
 
-      if (!silent) {
-        alert(`✅ ¡GUARDADO EXITOSO!\n\nLa Pregunta #${currentEditingQuestionIndex + 1} se guardó y sincronizó correctamente en la base de datos.`);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = '💾 GUARDAR CAMBIOS DE ESTA PREGUNTA';
       }
-      return true;
-    }
 
-    async function saveAllQuestionsToCloud() {
-      await saveCurrentQuestionEdits(true);
-      const badge = document.getElementById('editorCloudSyncBadge');
-      if (badge) {
-        const nowTime = new Date().toLocaleTimeString();
-        badge.innerText = `☁️ Guardado en Firebase (${nowTime})`;
-        badge.style.color = '#4ade80';
+      if (!firestoreError) {
+        if (!silent) {
+          alert(`✅ ¡GUARDADO EXITOSO!\n\nLa Pregunta #${currentEditingQuestionIndex + 1} se guardó y sincronizó correctamente en la base de datos de Firebase.`);
+        }
+        return true;
+      } else {
+        if (!silent) {
+          alert(`⚠️ Atención: Se guardó en tu navegador, pero Firebase reportó un error al sincronizar:\n\n${firestoreError.message || firestoreError}\n\nPor favor verifica tu conexión.`);
+        }
+        return false;
       }
-      alert(`☁️ ¡SINCRONIZACIÓN EXITOSA!\n\nLas ${EXAM_QUESTIONS.length} preguntas están guardadas y aseguradas en la base de datos de Firebase.`);
     }
 
     async function restoreOfficialBackup() {
