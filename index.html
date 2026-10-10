@@ -6,6 +6,20 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+
+  <!-- GitHub Pages & Browser Cache-Buster -->
+  <script>
+    (function() {
+      const APP_VERSION = 'v2026.10.09.v8';
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('v') !== APP_VERSION) {
+          url.searchParams.set('v', APP_VERSION);
+          window.location.replace(url.href);
+        }
+      } catch(e) {}
+    })();
+  </script>
   
   <title>ECOGAS LP | Capacitación, Examen & Batalla de Equipos</title>
   <meta name="title" content="ECOGAS LP | Capacitación, Examen & Batalla de Equipos" />
@@ -2365,8 +2379,8 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_W = 800;
-          const MAX_H = 600;
+          const MAX_W = 600;
+          const MAX_H = 450;
 
           if (width > height) {
             if (width > MAX_W) {
@@ -2385,7 +2399,7 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+          const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.72);
           
           currentUploadedImageBase64 = optimizedBase64;
           document.getElementById('editQuestionImageSelect').value = 'UPLOAD';
