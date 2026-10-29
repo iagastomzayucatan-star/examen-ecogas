@@ -1325,19 +1325,27 @@
     </div>
   </div>
 
-  <!-- MODAL: DETAILS OF PARTICIPANT -->
+  <!-- MODAL: DETAILS & INTERACTIVE ANSWER EDITOR OF PARTICIPANT -->
   <div id="modalParticipantDetails" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;">
-    <div class="glass-panel" style="max-width: 600px; width: 100%; padding: 20px; max-height: 90vh; display: flex; flex-direction: column; gap: 14px;">
+    <div class="glass-panel" style="max-width: 680px; width: 100%; padding: 20px; max-height: 92vh; display: flex; flex-direction: column; gap: 12px; border-color: rgba(74,222,128,0.4);">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
         <div>
-          <h3 id="modalDetailName" style="font-size: 16px; font-weight: 800; color: #ffffff;">Detalle de Respuestas</h3>
-          <p id="modalDetailSubtitle" style="font-size: 11px; color: #86efac;"></p>
+          <h3 id="modalDetailName" style="font-size: 17px; font-weight: 900; color: #ffffff;">Detalle y Edición de Respuestas</h3>
+          <p id="modalDetailSubtitle" style="font-size: 12px; font-weight: 700; color: #4ade80; margin-top: 2px;"></p>
         </div>
-        <button onclick="closeParticipantDetailsModal()" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer;">✕</button>
+        <button onclick="closeParticipantDetailsModal()" style="background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">✕</button>
       </div>
-      <div id="modalDetailContent" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;"></div>
-      <div style="text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-        <button onclick="closeParticipantDetailsModal()" class="btn-secondary">Cerrar</button>
+      <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 10px; padding: 8px 12px; font-size: 11px; color: #cbd5e1; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+        <span>💡 <b>Modo Edición Activo:</b> Haz clic en cualquier inciso (<b>A, B, C o D</b>) o en el botón <b>✓/✕</b> para cambiar la respuesta del participante.</span>
+      </div>
+      <div id="modalDetailContent" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; gap: 10px; flex-wrap: wrap;">
+        <button type="button" onclick="closeParticipantDetailsModal()" class="btn-secondary" style="padding: 10px 18px;">
+          ✕ Cerrar
+        </button>
+        <button type="button" id="btnSaveParticipantAnswers" onclick="saveParticipantBreakdownChanges()" class="btn-primary" style="padding: 11px 22px; font-size: 13px; font-weight: 900; background: linear-gradient(135deg, #22c55e, #15803d); box-shadow: 0 4px 15px rgba(34,197,94,0.4);">
+          💾 GUARDAR CAMBIOS DE RESPUESTAS
+        </button>
       </div>
     </div>
   </div>
@@ -1398,6 +1406,10 @@
           <option value="FAILED">✕ No Acreditado / Reprobado</option>
         </select>
       </div>
+
+      <button type="button" id="btnOpenAnswerEditorFromEditModal" onclick="openDetailsFromEditModal()" class="btn-secondary" style="width: 100%; justify-content: center; padding: 9px 12px; font-size: 12px; border-color: rgba(74,222,128,0.4); color: #86efac;">
+        📋 Editar Respuestas Individuales (Pregunta por Pregunta)
+      </button>
 
       <div style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 4px;">
         <button type="button" onclick="closeEditSubmissionModal()" class="btn-secondary" style="padding: 8px 14px;">
@@ -3208,7 +3220,7 @@
           const colRef = window.firestoreCol(window.db, 'ecogas_capacitacion_respuestas');
           const snapshot = await window.firestoreGetDocs(colRef);
           snapshot.forEach(doc => {
-            const d = { id: doc.id, ...doc.data() };
+            const d = { ...doc.data(), id: doc.id };
             const key = d.certificateId || d.id;
             if (key) subMap.set(key, d);
           });
@@ -3833,6 +3845,8 @@
       document.getElementById('editSubScore').value = 100;
       document.getElementById('editSubCorrect').value = EXAM_QUESTIONS.length || 12;
       document.getElementById('editSubStatus').value = 'APPROVED';
+      const btnDetail = document.getElementById('btnOpenAnswerEditorFromEditModal');
+      if (btnDetail) btnDetail.classList.add('hidden');
       document.getElementById('modalEditSubmission').classList.remove('hidden');
     }
 
@@ -3846,8 +3860,17 @@
       document.getElementById('editSubScore').value = sub.score !== undefined ? sub.score : 100;
       document.getElementById('editSubCorrect').value = sub.correctCount !== undefined ? sub.correctCount : (EXAM_QUESTIONS.length || 12);
       document.getElementById('editSubStatus').value = sub.isApproved ? 'APPROVED' : 'FAILED';
+      const btnDetail = document.getElementById('btnOpenAnswerEditorFromEditModal');
+      if (btnDetail) btnDetail.classList.remove('hidden');
 
       document.getElementById('modalEditSubmission').classList.remove('hidden');
+    }
+
+    function openDetailsFromEditModal() {
+      const certId = document.getElementById('editSubCertId').value;
+      if (!certId) return;
+      closeEditSubmissionModal();
+      openParticipantDetails(certId);
     }
 
     function closeEditSubmissionModal() {
@@ -3876,6 +3899,16 @@
       let sub = null;
       if (!certId) {
         certId = 'ECO-' + Date.now().toString(36).toUpperCase();
+        const defaultBreakdown = EXAM_QUESTIONS.map((q, idx) => ({
+          questionId: q.id || (idx + 1),
+          questionNumber: idx + 1,
+          questionText: q.question,
+          options: q.options || ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+          correctOptionIndex: q.correctIndex || 0,
+          userOptionIndex: idx < newCorrect ? (q.correctIndex || 0) : ((q.correctIndex || 0) === 0 ? 1 : 0),
+          isCorrect: idx < newCorrect,
+          explanation: q.explanation || ''
+        }));
         sub = {
           id: certId,
           certificateId: certId,
@@ -3886,7 +3919,7 @@
           isApproved: newStatus,
           timestamp: new Date().toISOString(),
           syncedToCloud: true,
-          breakdown: []
+          breakdown: defaultBreakdown
         };
         adminSubmissions.unshift(sub);
       } else {
@@ -3967,30 +4000,222 @@
       alert('✓ Registro eliminado con éxito.');
     }
 
+    let currentEditingDetailCertId = null;
+
+    function ensureParticipantBreakdown(target) {
+      if (!target) return;
+      if (!Array.isArray(target.breakdown) || target.breakdown.length === 0) {
+        const correctLimit = target.correctCount !== undefined ? target.correctCount : (EXAM_QUESTIONS.length || 12);
+        target.breakdown = EXAM_QUESTIONS.map((q, idx) => {
+          const isCorr = idx < correctLimit;
+          const corrIdx = q.correctIndex || 0;
+          return {
+            questionId: q.id || (idx + 1),
+            questionNumber: idx + 1,
+            questionText: q.question,
+            options: q.options || ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+            correctOptionIndex: corrIdx,
+            userOptionIndex: isCorr ? corrIdx : (corrIdx === 0 ? 1 : 0),
+            isCorrect: isCorr,
+            explanation: q.explanation || ''
+          };
+        });
+      } else {
+        target.breakdown.forEach((b, idx) => {
+          const fallbackQ = EXAM_QUESTIONS[idx] || {};
+          if (!Array.isArray(b.options) || b.options.length === 0) {
+            b.options = fallbackQ.options || ['Opción A', 'Opción B', 'Opción C', 'Opción D'];
+          }
+          if (b.correctOptionIndex === undefined || b.correctOptionIndex === null) {
+            b.correctOptionIndex = fallbackQ.correctIndex !== undefined ? fallbackQ.correctIndex : 0;
+          }
+          if (b.userOptionIndex === undefined || b.userOptionIndex === null) {
+            b.userOptionIndex = b.isCorrect ? b.correctOptionIndex : (b.correctOptionIndex === 0 ? 1 : 0);
+          }
+        });
+      }
+    }
+
     function openParticipantDetails(certId) {
       const target = adminSubmissions.find(s => s.certificateId === certId);
       if (!target) return;
 
-      document.getElementById('modalDetailName').innerText = target.name;
-      document.getElementById('modalDetailSubtitle').innerText = `Calificación: ${target.score} pts (${target.correctCount}/${target.totalQuestions || 15} aciertos) - Folio: ${target.certificateId}`;
+      currentEditingDetailCertId = certId;
+      ensureParticipantBreakdown(target);
+      renderParticipantDetailCards(target);
+      document.getElementById('modalParticipantDetails').classList.remove('hidden');
+    }
 
+    function renderParticipantDetailCards(target) {
+      if (!target) return;
       const content = document.getElementById('modalDetailContent');
-      if (target.breakdown && target.breakdown.length > 0) {
-        content.innerHTML = target.breakdown.map(b => `
-          <div class="glass-card" style="padding: 10px; border-color: ${b.isCorrect ? 'rgba(74,222,128,0.3)' : 'rgba(251,113,133,0.3)'};">
-            <div style="font-size: 12px; font-weight: 800; color: #fff;">#${b.questionNumber}. ${b.questionText}</div>
-            <div style="font-size: 11px; margin-top: 4px;">
-              <span style="color: ${b.isCorrect ? '#4ade80' : '#fb7185'}; font-weight: 700;">
-                ${b.isCorrect ? '✓ Correcta' : '✕ Incorrecta'}
-              </span>
+      const prevScroll = content ? content.scrollTop : 0;
+
+      const totalQ = (target.breakdown && target.breakdown.length) ? target.breakdown.length : (target.totalQuestions || 12);
+      document.getElementById('modalDetailName').innerText = target.name;
+      document.getElementById('modalDetailSubtitle').innerText = `Calificación: ${target.score} pts (${target.correctCount}/${totalQ} aciertos) - Folio: ${target.certificateId}`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      content.innerHTML = target.breakdown.map((b, qIdx) => {
+        const opts = b.options || ['Opción A', 'Opción B', 'Opción C', 'Opción D'];
+        const corrIdx = Number(b.correctOptionIndex ?? 0);
+        const userIdx = b.userOptionIndex !== null && b.userOptionIndex !== undefined ? Number(b.userOptionIndex) : -1;
+
+        const optionsHtml = opts.map((optText, optIdx) => {
+          const isUserSelected = (optIdx === userIdx);
+          const isOfficialCorrect = (optIdx === corrIdx);
+
+          let rowBg = 'rgba(255,255,255,0.03)';
+          let rowBorder = 'rgba(255,255,255,0.1)';
+          let textColor = '#cbd5e1';
+
+          if (isUserSelected && b.isCorrect) {
+            rowBg = 'rgba(34, 197, 94, 0.22)';
+            rowBorder = '#4ade80';
+            textColor = '#ffffff';
+          } else if (isUserSelected && !b.isCorrect) {
+            rowBg = 'rgba(244, 63, 94, 0.22)';
+            rowBorder = '#fb7185';
+            textColor = '#ffffff';
+          } else if (isOfficialCorrect) {
+            rowBg = 'rgba(34, 197, 94, 0.08)';
+            rowBorder = 'rgba(74, 222, 128, 0.35)';
+          }
+
+          return `
+            <div onclick="selectParticipantQuestionOption(${qIdx}, ${optIdx})" style="cursor: pointer; padding: 8px 10px; border-radius: 8px; background: ${rowBg}; border: 1.5px solid ${rowBorder}; display: flex; justify-content: space-between; align-items: center; gap: 8px; transition: all 0.15s ease;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: ${textColor}; font-weight: ${isUserSelected ? '800' : '500'};">
+                <span style="min-width: 22px; height: 22px; border-radius: 6px; background: ${isUserSelected ? (b.isCorrect ? '#16a34a' : '#e11d48') : 'rgba(255,255,255,0.1)'}; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
+                  ${letters[optIdx] || (optIdx + 1)}
+                </span>
+                <span>${optText}</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                ${isOfficialCorrect ? `<span style="font-size: 10px; font-weight: 800; color: #4ade80; background: rgba(22,101,52,0.6); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(74,222,128,0.4);">★ Correcta</span>` : ''}
+                ${isUserSelected ? `<span style="font-size: 10px; font-weight: 800; color: #fff; background: ${b.isCorrect ? '#15803d' : '#be123c'}; padding: 2px 7px; border-radius: 6px;">👤 Elegida</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="glass-card" style="padding: 12px; border-color: ${b.isCorrect ? 'rgba(74,222,128,0.4)' : 'rgba(251,113,133,0.45)'}; background: rgba(6, 22, 13, 0.85);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
+              <div style="font-size: 13px; font-weight: 800; color: #fff; line-height: 1.35;">
+                #${b.questionNumber || (qIdx + 1)}. ${b.questionText}
+              </div>
+              <button type="button" onclick="toggleParticipantQuestionCorrectness(${qIdx})" style="cursor: pointer; flex-shrink: 0; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; border: 1px solid ${b.isCorrect ? '#4ade80' : '#fb7185'}; background: ${b.isCorrect ? 'rgba(22, 163, 74, 0.25)' : 'rgba(225, 29, 72, 0.25)'}; color: ${b.isCorrect ? '#4ade80' : '#fda4af'};" title="Haz clic para alternar entre Correcta e Incorrecta">
+                ${b.isCorrect ? '✓ Correcta' : '✕ Incorrecta'} 🔄
+              </button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              ${optionsHtml}
             </div>
           </div>
-        `).join('');
+        `;
+      }).join('');
+
+      if (content) content.scrollTop = prevScroll;
+    }
+
+    function recalculateTargetSubmissionScore(target) {
+      if (!target || !Array.isArray(target.breakdown)) return;
+      const total = target.breakdown.length || 12;
+      const correct = target.breakdown.filter(b => b && b.isCorrect).length;
+      target.correctCount = correct;
+      target.totalQuestions = total;
+      target.score = Math.round((correct / total) * 100);
+      target.isApproved = (target.score >= 80);
+    }
+
+    function selectParticipantQuestionOption(qIdx, optIdx) {
+      if (!currentEditingDetailCertId) return;
+      const target = adminSubmissions.find(s => s.certificateId === currentEditingDetailCertId);
+      if (!target || !target.breakdown || !target.breakdown[qIdx]) return;
+
+      const b = target.breakdown[qIdx];
+      const corrIdx = Number(b.correctOptionIndex ?? 0);
+      b.userOptionIndex = optIdx;
+      b.isCorrect = (optIdx === corrIdx);
+
+      recalculateTargetSubmissionScore(target);
+      renderParticipantDetailCards(target);
+      saveParticipantBreakdownChanges(true);
+    }
+
+    function toggleParticipantQuestionCorrectness(qIdx) {
+      if (!currentEditingDetailCertId) return;
+      const target = adminSubmissions.find(s => s.certificateId === currentEditingDetailCertId);
+      if (!target || !target.breakdown || !target.breakdown[qIdx]) return;
+
+      const b = target.breakdown[qIdx];
+      const corrIdx = Number(b.correctOptionIndex ?? 0);
+      if (b.isCorrect) {
+        b.userOptionIndex = (corrIdx === 0 ? 1 : 0);
+        b.isCorrect = false;
       } else {
-        content.innerHTML = '<div style="color: #94a3b8; font-size: 12px;">No hay desglose detallado guardado para este registro antiguo.</div>';
+        b.userOptionIndex = corrIdx;
+        b.isCorrect = true;
       }
 
-      document.getElementById('modalParticipantDetails').classList.remove('hidden');
+      recalculateTargetSubmissionScore(target);
+      renderParticipantDetailCards(target);
+      saveParticipantBreakdownChanges(true);
+    }
+
+    async function saveParticipantBreakdownChanges(silent = false) {
+      if (!currentEditingDetailCertId) return;
+      const target = adminSubmissions.find(s => s.certificateId === currentEditingDetailCertId);
+      if (!target) return;
+
+      const btn = document.getElementById('btnSaveParticipantAnswers');
+      if (btn && !silent) {
+        btn.disabled = true;
+        btn.innerText = '⏳ Guardando en Firebase...';
+      }
+
+      recalculateTargetSubmissionScore(target);
+
+      // 1. Update localStorage
+      localStorage.setItem('ecogas_admin_submissions', JSON.stringify(adminSubmissions));
+
+      // 2. Update Firestore via REST + SDK
+      const docId = target.id || target.certificateId;
+      let cloudOk = false;
+
+      try {
+        await firestoreRestPatchDoc(`ecogas_capacitacion_respuestas/${docId}`, target);
+        cloudOk = true;
+      } catch (e) {
+        console.warn('REST breakdown update warning:', e);
+      }
+
+      if (window.db && window.firestoreDoc && window.firestoreSetDoc) {
+        try {
+          const docRef = window.firestoreDoc(window.db, 'ecogas_capacitacion_respuestas', docId);
+          await window.firestoreSetDoc(docRef, {
+            ...target,
+            updatedAt: Date.now()
+          }, { merge: true });
+          cloudOk = true;
+        } catch (e) {
+          console.warn('SDK breakdown update warning:', e);
+        }
+      }
+
+      calculateAdminKPIs();
+      filterAdminSubmissions();
+
+      if (btn && !silent) {
+        btn.disabled = false;
+        btn.innerText = '💾 GUARDAR CAMBIOS DE RESPUESTAS';
+      }
+
+      if (silent) {
+        showToast(`💾 Respuesta actualizada: ${target.name} (${target.score} pts - ${target.correctCount}/${target.totalQuestions} aciertos)`);
+      } else {
+        alert(`✅ ¡CAMBIOS GUARDADOS EN LA BASE DE DATOS!\n\nParticipante: ${target.name}\nNueva Calificación: ${target.score} pts (${target.correctCount}/${target.totalQuestions} aciertos)\nEstado: ${target.isApproved ? 'APROBADO' : 'NO ACREDITADO'}`);
+      }
     }
 
     function closeParticipantDetailsModal() {
