@@ -543,30 +543,8 @@
             <span style="font-size: 10px; color: #94a3b8; display: block; margin-top: 4px;">Tal como aparecerá en tu diploma oficial.</span>
           </div>
 
-          <div class="input-group">
-            <label class="input-label" for="inputPassword">Contraseña de Acceso:</label>
-            <div style="position: relative;">
-              <input 
-                type="password" 
-                id="inputPassword" 
-                required 
-                placeholder="Ingresa la contraseña" 
-                class="input-field"
-                style="padding-right: 44px;"
-              />
-              <button 
-                type="button" 
-                onclick="togglePasswordVisibility()" 
-                style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px;"
-                tabindex="-1"
-              >
-                👁️
-              </button>
-            </div>
-          </div>
-
           <div id="loginErrorMsg" class="hidden" style="padding: 10px; border-radius: 10px; background: rgba(225, 29, 72, 0.2); border: 1px solid rgba(225, 29, 72, 0.5); color: #fda4af; font-size: 12px; margin-bottom: 14px;">
-            <span id="loginErrorText">Usuario o contraseña incorrectos.</span>
+            <span id="loginErrorText">Por favor ingresa tu nombre completo.</span>
           </div>
 
           <button type="submit" class="btn-primary" style="width: 100%;">
@@ -2071,18 +2049,22 @@
     // NAVIGATION & VIEW SWITCHER
     function handleLogoClick() {
       if (currentUser && currentUser.role === 'ADMIN') {
-        showView('viewAdmin');
-      } else {
-        showView('viewLogin');
+        currentUser = null;
       }
+      showView('viewLogin');
     }
 
     function togglePasswordVisibility() {
       const input = document.getElementById('inputPassword');
-      input.type = input.type === 'password' ? 'text' : 'password';
+      if (input) input.type = input.type === 'password' ? 'text' : 'password';
     }
 
     function showView(viewId) {
+      // Automatically lock Admin session whenever leaving viewAdmin
+      if (viewId !== 'viewAdmin' && currentUser && currentUser.role === 'ADMIN') {
+        currentUser = null;
+      }
+
       const views = [
         'viewLogin', 'viewExam', 'viewResults', 'viewAdmin', 
         'viewKahootJoin', 'viewKahootPlayerLobby', 'viewKahootPlayerGame', 'viewKahootHost'
@@ -2100,8 +2082,10 @@
     function switchMode(mode) {
       soundEngine.stopMusic();
       if (mode === 'exam') {
+        if (currentUser && currentUser.role === 'ADMIN') currentUser = null;
         showView('viewLogin');
       } else if (mode === 'kahoot-join') {
+        if (currentUser && currentUser.role === 'ADMIN') currentUser = null;
         if (kahootTeamData && kahootTeamData.id && kahootTeamData.name) {
           renderPlayerLobbyUI();
           attachTeamListeners(currentKahootPin, kahootTeamData.id);
@@ -2110,48 +2094,39 @@
           showView('viewKahootJoin');
         }
       } else if (mode === 'kahoot-host') {
-        initKahootHost();
+        const adminEl = document.getElementById('viewAdmin');
+        const isCurrentlyInAdmin = adminEl && !adminEl.classList.contains('hidden') && currentUser && currentUser.role === 'ADMIN';
+        if (isCurrentlyInAdmin) {
+          initKahootHost();
+        } else {
+          openAdminAccess('kahoot-host');
+        }
       } else if (mode === 'admin') {
-        showView('viewAdmin');
+        openAdminAccess('admin');
       }
     }
 
-    // AUTHENTICATION
+    // AUTHENTICATION (INDIVIDUAL EXAM - NAME ONLY, NO PASSWORD)
     function handleLogin(e) {
       e.preventDefault();
       const nameInput = document.getElementById('inputUserName').value.trim();
-      const passInput = document.getElementById('inputPassword').value.trim();
       const errBox = document.getElementById('loginErrorMsg');
       const errText = document.getElementById('loginErrorText');
 
       errBox.classList.add('hidden');
 
-      if (!nameInput || !passInput) {
-        errText.innerText = 'Por favor ingresa tu nombre y contraseña.';
+      if (!nameInput) {
+        errText.innerText = 'Por favor ingresa tu nombre completo para comenzar.';
         errBox.classList.remove('hidden');
         return;
       }
 
-      if (passInput === '1997') {
-        currentUser = {
-          name: nameInput,
-          role: 'ADMIN',
-          loginTime: new Date().toISOString()
-        };
-        showView('viewAdmin');
-        loadAdminData();
-      } else if (passInput === 'Tomza2026' || passInput === 'tomza2026' || passInput === 'ecogas' || passInput === 'Ecogas2026') {
-        currentUser = {
-          name: nameInput,
-          role: 'USER',
-          loginTime: new Date().toISOString()
-        };
-        startExam();
-      } else {
-        errText.innerText = 'Contraseña incorrecta. Consulta al supervisor de capacitación.';
-        errBox.classList.remove('hidden');
-        soundEngine.playIncorrectSound();
-      }
+      currentUser = {
+        name: nameInput,
+        role: 'USER',
+        loginTime: new Date().toISOString()
+      };
+      startExam();
     }
 
     // START INDIVIDUAL EXAM
@@ -2393,7 +2368,13 @@
       }, 3500);
     }
 
-    function openQuestionsEditorModal() {
+    function openQuestionsEditorModal(bypassAuth = false) {
+      const adminEl = document.getElementById('viewAdmin');
+      const isInAdmin = adminEl && !adminEl.classList.contains('hidden') && currentUser && currentUser.role === 'ADMIN';
+      if (!bypassAuth && !isInAdmin) {
+        openAdminAccess('questions-editor');
+        return;
+      }
       populateEditorQuestionSelector();
       if (currentEditingQuestionIndex >= EXAM_QUESTIONS.length || currentEditingQuestionIndex < 0) {
         currentEditingQuestionIndex = 0;
@@ -3824,19 +3805,17 @@
       }).join('');
     }
 
-    function openAdminAccess() {
-      if (currentUser && currentUser.role === 'ADMIN') {
-        showView('viewAdmin');
-        loadAdminData(true);
-      } else {
-        document.getElementById('inputAdminModalPass').value = '';
-        document.getElementById('adminModalError').classList.add('hidden');
-        document.getElementById('modalAdminAccess').classList.remove('hidden');
-        setTimeout(() => {
-          const inp = document.getElementById('inputAdminModalPass');
-          if (inp) inp.focus();
-        }, 150);
-      }
+    let pendingAdminTargetAction = 'admin';
+
+    function openAdminAccess(targetAction = 'admin') {
+      pendingAdminTargetAction = targetAction || 'admin';
+      document.getElementById('inputAdminModalPass').value = '';
+      document.getElementById('adminModalError').classList.add('hidden');
+      document.getElementById('modalAdminAccess').classList.remove('hidden');
+      setTimeout(() => {
+        const inp = document.getElementById('inputAdminModalPass');
+        if (inp) inp.focus();
+      }, 150);
     }
 
     function closeAdminAccessModal() {
@@ -3847,14 +3826,20 @@
       e.preventDefault();
       const pass = document.getElementById('inputAdminModalPass').value.trim();
       if (pass === '1997') {
-        currentUser = {
-          name: 'Luis & Andrés (Admin)',
-          role: 'ADMIN',
-          loginTime: new Date().toISOString()
-        };
         closeAdminAccessModal();
-        showView('viewAdmin');
-        loadAdminData(true);
+        if (pendingAdminTargetAction === 'questions-editor') {
+          openQuestionsEditorModal(true);
+        } else if (pendingAdminTargetAction === 'kahoot-host') {
+          initKahootHost();
+        } else {
+          currentUser = {
+            name: 'Luis & Andrés (Admin)',
+            role: 'ADMIN',
+            loginTime: new Date().toISOString()
+          };
+          showView('viewAdmin');
+          loadAdminData(true);
+        }
       } else {
         document.getElementById('adminModalError').classList.remove('hidden');
         soundEngine.playIncorrectSound();
