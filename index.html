@@ -2094,13 +2094,8 @@
           showView('viewKahootJoin');
         }
       } else if (mode === 'kahoot-host') {
-        const adminEl = document.getElementById('viewAdmin');
-        const isCurrentlyInAdmin = adminEl && !adminEl.classList.contains('hidden') && currentUser && currentUser.role === 'ADMIN';
-        if (isCurrentlyInAdmin) {
-          initKahootHost();
-        } else {
-          openAdminAccess('kahoot-host');
-        }
+        if (currentUser && currentUser.role === 'ADMIN') currentUser = null;
+        initKahootHost();
       } else if (mode === 'admin') {
         openAdminAccess('admin');
       }
