@@ -1871,21 +1871,21 @@
           'Es de un año, y el cliente debe realizar cargas en Estaciones de Gas Tomza con su Código Personal.',
           'Es de un año, y el cliente debe cargar gas en cualquier estación presentando siempre su factura original.'
         ],
-        correctIndex: 1,
+        correctIndex: 2,
         explanation: 'Es de un año, y el cliente debe realizar cargas en Estaciones de Gas Tomza con su Código Personal para validar su garantía.'
       },
       {
         id: 11,
-        question: '¿Cuál es la garantía estándar ofrecida por ECOGAS LP en la instalación de sus sistemas de 5ª generación?',
+        question: '¿Con qué frecuencia se debe realizar el mantenimiento al equipo GLP y cuáles son los costos correspondientes?',
         image: 'img_4cil.jpg',
         options: [
-          '1 mes o 1,000 km lo que ocurra primero.',
-          '1 año o hasta 50,000 km en equipo e instalación con soporte en la red de talleres Grupo Tomza.',
-          '10 años sin requerir ningún servicio de mantenimiento.',
-          'Garantía limitada únicamente válida en la ciudad de Mérida.'
+          'Cada 100,000 km o 1 año, con un costo general de $1,400 sin importar el número de cilindros.',
+          'Cada 10,000 km o 3 meses, y el costo es de $2,500 para vehículos de 4 cilindros.',
+          'Cada 50,000 km o 6 meses (lo que ocurra primero), con un costo de $1,500 para 4 cilindros y $2,500 para 6 y 8 cilindros.',
+          'Cada 50,000 km sin límite de tiempo, con un costo de $1,400 para vehículos de 6 y 8 cilindros.'
         ],
-        correctIndex: 1,
-        explanation: 'ECOGAS LP respalda sus conversiones con 1 año o 50,000 km de garantía integral y red de servicio autorizada en la península y sureste.'
+        correctIndex: 2,
+        explanation: 'Cada 50,000 km o 6 meses (lo que ocurra primero), con un costo de $1,500 para 4 cilindros y $2,500 para 6 y 8 cilindros.'
       },
       {
         id: 12,
@@ -1902,7 +1902,23 @@
       }
     ];
 
-    let EXAM_QUESTIONS = JSON.parse(JSON.stringify(DEFAULT_EXAM_QUESTIONS));
+    function normalizeOfficialQuestionList(list) {
+      if (!Array.isArray(list)) return list;
+      list.forEach((q, idx) => {
+        if (!q) return;
+        const txt = (q.question || '').toLowerCase();
+        if (txt.includes('garantía del equipo de gas lp') && Array.isArray(q.options) && q.options[2] && q.options[2].includes('Código Personal')) {
+          q.correctIndex = 2;
+        }
+        if (txt.includes('frecuencia se debe realizar el mantenimiento al equipo glp') && Array.isArray(q.options) && q.options[2] && q.options[2].includes('50,000 km')) {
+          q.correctIndex = 2;
+          q.id = idx + 1;
+        }
+      });
+      return list;
+    }
+
+    let EXAM_QUESTIONS = normalizeOfficialQuestionList(JSON.parse(JSON.stringify(DEFAULT_EXAM_QUESTIONS)));
 
     // Load custom questions from localStorage or Firestore if available
     try {
@@ -1910,7 +1926,8 @@
       if (savedQ) {
         const parsed = JSON.parse(savedQ);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          EXAM_QUESTIONS = parsed;
+          EXAM_QUESTIONS = normalizeOfficialQuestionList(parsed);
+          localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
         }
       }
     } catch(e) {}
@@ -2018,7 +2035,7 @@
           const editorModal = document.getElementById('modalQuestionsEditor');
           const isEditorOpen = editorModal && !editorModal.classList.contains('hidden');
           if (!isEditorOpen) {
-            EXAM_QUESTIONS = cloudData.list;
+            EXAM_QUESTIONS = normalizeOfficialQuestionList(cloudData.list);
             localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
           }
         }
@@ -2990,6 +3007,7 @@
       ctx.fillStyle = '#475569';
       ctx.font = '600 14px "Montserrat", sans-serif';
       ctx.fillText(subTitleMain, W / 2, 280);
+      ctx.letterSpacing = '0px';
 
       const displayName = isTeam ? (data.teamName || 'EQUIPO CAMPEÓN') : (data.name || 'PARTICIPANTE');
       ctx.fillStyle = '#0b3819';
@@ -3031,25 +3049,30 @@
         ctx.fillText('Sistemas de Conversión a Gas LP (Bi-Fuel) \u2022 Normativas de Seguridad \u2022 Precios y Promociones \u2022 Atención a Clientes', W / 2, 524);
       }
 
-      // Folio Box
+      // Folio Box (dynamically sized so score text never overflows)
+      ctx.letterSpacing = '0.5px';
+      ctx.font = '700 15px "Montserrat", sans-serif';
+      const scoreTxt = isTeam ? `PUNTUACIÓN OBTENIDA EN BATALLA: ${data.score || 0} PTS` : `CALIFICACIÓN ACREDITADA: ${data.score} / 100 PTS  (${data.correctCount} / ${data.totalQuestions || 12} REACTIVOS)`;
+      const measuredScoreWidth = ctx.measureText(scoreTxt).width;
+      const boxW = Math.max(640, Math.ceil(measuredScoreWidth) + 80);
+      const boxH = 68;
+      const boxX = (W / 2) - (boxW / 2);
+      const boxY = 553;
+
       ctx.fillStyle = '#f8fafc';
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1.5;
-      const boxW = 580;
-      const boxH = 65;
-      const boxX = (W / 2) - (boxW / 2);
-      const boxY = 555;
       ctx.fillRect(boxX, boxY, boxW, boxH);
       ctx.strokeRect(boxX, boxY, boxW, boxH);
 
       ctx.fillStyle = '#0f172a';
-      ctx.font = '700 15px Montserrat';
-      const scoreTxt = isTeam ? `PUNTUACIÓN OBTENIDA EN BATALLA: ${data.score || 0} PTS` : `CALIFICACIÓN ACREDITADA: ${data.score} / 100 PTS  (${data.correctCount} / ${data.totalQuestions} REACTIVOS)`;
-      ctx.fillText(scoreTxt, W / 2, boxY + 27);
+      ctx.font = '700 15px "Montserrat", sans-serif';
+      ctx.fillText(scoreTxt, W / 2, boxY + 28);
 
       ctx.fillStyle = '#64748b';
-      ctx.font = '600 13px Montserrat';
-      ctx.fillText(`FOLIO OFICIAL: ${data.certificateId || ('ECO-2026-' + Date.now().toString(36).toUpperCase())}`, W / 2, boxY + 49);
+      ctx.font = '600 13px "Montserrat", sans-serif';
+      ctx.fillText(`FOLIO OFICIAL: ${data.certificateId || ('ECO-2026-' + Date.now().toString(36).toUpperCase())}`, W / 2, boxY + 50);
+      ctx.letterSpacing = '0px';
 
       const dateObj = new Date(data.timestamp || new Date());
       const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -4021,6 +4044,7 @@
           };
         });
       } else {
+        let fixedAnyOfficialAnswer = false;
         target.breakdown.forEach((b, idx) => {
           const fallbackQ = EXAM_QUESTIONS[idx] || {};
           if (!Array.isArray(b.options) || b.options.length === 0) {
@@ -4029,10 +4053,25 @@
           if (b.correctOptionIndex === undefined || b.correctOptionIndex === null) {
             b.correctOptionIndex = fallbackQ.correctIndex !== undefined ? fallbackQ.correctIndex : 0;
           }
+          // Auto-fix Q#10 and Q#11 official correct answer to Option C (index 2)
+          const qTxt = (b.questionText || '').toLowerCase();
+          if (qTxt.includes('garantía del equipo de gas lp') && b.options[2] && b.options[2].includes('Código Personal') && Number(b.correctOptionIndex) !== 2) {
+            b.correctOptionIndex = 2;
+            b.isCorrect = (Number(b.userOptionIndex) === 2);
+            fixedAnyOfficialAnswer = true;
+          }
+          if (qTxt.includes('frecuencia se debe realizar el mantenimiento al equipo glp') && b.options[2] && b.options[2].includes('50,000 km') && Number(b.correctOptionIndex) !== 2) {
+            b.correctOptionIndex = 2;
+            b.isCorrect = (Number(b.userOptionIndex) === 2);
+            fixedAnyOfficialAnswer = true;
+          }
           if (b.userOptionIndex === undefined || b.userOptionIndex === null) {
             b.userOptionIndex = b.isCorrect ? b.correctOptionIndex : (b.correctOptionIndex === 0 ? 1 : 0);
           }
         });
+        if (fixedAnyOfficialAnswer) {
+          recalculateTargetSubmissionScore(target);
+        }
       }
     }
 
@@ -4091,7 +4130,10 @@
                 <span>${optText}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                ${isOfficialCorrect ? `<span style="font-size: 10px; font-weight: 800; color: #4ade80; background: rgba(22,101,52,0.6); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(74,222,128,0.4);">★ Correcta</span>` : ''}
+                ${isOfficialCorrect
+                  ? `<span style="font-size: 10px; font-weight: 800; color: #4ade80; background: rgba(22,101,52,0.6); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(74,222,128,0.4);">★ Correcta</span>`
+                  : `<button type="button" onclick="event.stopPropagation(); setOfficialCorrectOptionFromDetail(${qIdx}, ${optIdx})" style="cursor: pointer; font-size: 9px; font-weight: 700; color: #94a3b8; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);" title="Cambiar la respuesta correcta oficial de esta pregunta a este inciso">☆ Hacer Correcta</button>`
+                }
                 ${isUserSelected ? `<span style="font-size: 10px; font-weight: 800; color: #fff; background: ${b.isCorrect ? '#15803d' : '#be123c'}; padding: 2px 7px; border-radius: 6px;">👤 Elegida</span>` : ''}
               </div>
             </div>
@@ -4116,6 +4158,30 @@
       }).join('');
 
       if (content) content.scrollTop = prevScroll;
+    }
+
+    async function setOfficialCorrectOptionFromDetail(qIdx, optIdx) {
+      if (!currentEditingDetailCertId) return;
+      const target = adminSubmissions.find(s => s.certificateId === currentEditingDetailCertId);
+      if (!target || !target.breakdown || !target.breakdown[qIdx]) return;
+
+      const b = target.breakdown[qIdx];
+      b.correctOptionIndex = optIdx;
+      b.isCorrect = (Number(b.userOptionIndex) === optIdx);
+
+      // Update global EXAM_QUESTIONS bank as well
+      if (EXAM_QUESTIONS[qIdx]) {
+        EXAM_QUESTIONS[qIdx].correctIndex = optIdx;
+        localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
+        firestoreRestPatchDoc('ecogas_kahoot_config/questions', {
+          list: EXAM_QUESTIONS,
+          updatedAt: Date.now()
+        }).catch(() => {});
+      }
+
+      recalculateTargetSubmissionScore(target);
+      renderParticipantDetailCards(target);
+      saveParticipantBreakdownChanges(true);
     }
 
     function recalculateTargetSubmissionScore(target) {
@@ -5075,7 +5141,7 @@
               const editorModal = document.getElementById('modalQuestionsEditor');
               const isEditorOpen = editorModal && !editorModal.classList.contains('hidden');
               if (!isEditorOpen) {
-                EXAM_QUESTIONS = cloudData.list;
+                EXAM_QUESTIONS = typeof normalizeOfficialQuestionList === 'function' ? normalizeOfficialQuestionList(cloudData.list) : cloudData.list;
                 localStorage.setItem('ecogas_custom_questions', JSON.stringify(EXAM_QUESTIONS));
                 console.log('✅ Sincronización en tiempo real de preguntas desde Firestore (' + EXAM_QUESTIONS.length + ' reactivos)');
               } else {
