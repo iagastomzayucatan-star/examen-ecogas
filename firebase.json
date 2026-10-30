@@ -5,7 +5,11 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "index_template.html",
+      "*.js",
+      "package*.json",
+      "questions_firestore_current_raw.json"
     ],
     "headers": [
       {
